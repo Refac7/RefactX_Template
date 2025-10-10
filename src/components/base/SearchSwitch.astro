@@ -1,0 +1,232 @@
+---
+
+---
+
+<button
+  class="inline-flex items-center text-foreground cursor-pointer hover:scale-105 size-6 origin-center"
+  id="search-switch"
+  aria-label="Search"
+  title="Search (Ctrl+K)"
+>
+    <span class="icon-[material-symbols--manage-search] size-6"></span>
+</button>
+
+<div id="search-mask" class="fixed z-200 hidden inset-0 bg-background/80 backdrop-blur-md dark:bg-background/90 transition-opacity duration-200 opacity-0">
+  <div class="absolute left-1/2 top-20 -translate-x-1/2 transition-transform duration-300 -translate-y-4 search-panel-show">
+      <div id="search-panel" class="grid grid-rows-[auto_1fr] max-h-[80vh] w-[22rem] sm:w-[40rem] bg-background/95 dark:bg-background/95 border border-border shadow-lg dark:shadow-accent/20 overflow-hidden">
+      <div id="search-bar" class="grid grid-cols-[auto_1fr_auto_auto] items-center gap-2 px-4 h-12 border-b border-border">
+        <span class="icon-[material-symbols--manage-search] size-6 text-muted-foreground"></span>
+        <label class="sr-only" for="search-input">Search</label>
+        <input
+          type="search"
+          id="search-input"
+          class="w-full h-8 bg-transparent outline-none text-foreground placeholder:text-muted-foreground font-normal leading-8 text-base"
+          placeholder="Search"
+          autocomplete="off"
+        />
+        <button id="search-exact" class="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded border border-border text-muted-foreground hover:bg-accent select-none" aria-pressed="false" title="精确匹配">
+          <span class="icon-[material-symbols--format-quote] size-4"></span>
+          Exact
+        </button>
+        <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-xs text-muted-foreground bg-muted rounded">ESC</kbd>
+      </div>
+      <div id="search-results" class="overflow-y-auto no-scrollbar p-1 sm:p-2 overscroll-contain" data-base="/"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('search-input') as HTMLInputElement
+  const searchMask = document.getElementById('search-mask')
+  const searchSwitch = document.getElementById('search-switch')
+  const searchResults = document.getElementById('search-results')
+  const exactToggle = document.getElementById('search-exact') as HTMLButtonElement | null
+
+  // 并发控制：用于丢弃过期的搜索结果
+  let searchReqId = 0
+
+  // 精确模式状态（持久化）
+  let exactMode = false
+  try { exactMode = localStorage.getItem('search-exact') === '1' } catch {}
+  const updateExactUI = () => {
+    if (!exactToggle) return
+    exactToggle.setAttribute('aria-pressed', exactMode ? 'true' : 'false')
+    if (exactMode) {
+      exactToggle.classList.add('bg-accent')
+      exactToggle.classList.remove('text-muted-foreground')
+    } else {
+      exactToggle.classList.remove('bg-accent')
+      exactToggle.classList.add('text-muted-foreground')
+    }
+  }
+  updateExactUI()
+  exactToggle?.addEventListener('click', () => {
+    exactMode = !exactMode
+    try { localStorage.setItem('search-exact', exactMode ? '1' : '0') } catch {}
+    updateExactUI()
+    // 模式变更后立刻重新检索
+    searchInput?.dispatchEvent(new Event('input'))
+  })
+
+  // 声明 pagefind 类型
+  declare const pagefind: any
+
+  // 打开搜索面板
+  const openSearch = () => {
+    searchMask?.classList.remove('hidden')
+    searchMask?.offsetHeight
+    searchMask?.classList.remove('opacity-0')
+    searchInput?.focus()
+    // 移除了 document.body.style.overflow = 'hidden'
+  }
+
+  // 关闭搜索面板
+  const closeSearch = () => {
+    searchMask?.classList.add('opacity-0')
+    if (searchInput) searchInput.value = ''
+    if (searchResults) searchResults.innerHTML = ''
+    setTimeout(() => {
+      searchMask?.classList.add('hidden')
+    }, 200)
+  }
+
+  const closeSearchIn = () => {
+    searchMask?.classList.add('opacity-0')
+    if (searchInput) searchInput.value = ''
+    if (searchResults) searchResults.innerHTML = ''
+      searchMask?.classList.add('hidden')
+  }
+
+  // 点击开关
+  searchSwitch?.addEventListener('click', openSearch)
+
+  // 点击遮罩层关闭
+  searchMask?.addEventListener('click', (e) => {
+    if (e.target === searchMask) closeSearch()
+  })
+
+  // 快捷键支持
+  document.addEventListener('keydown', (e) => {
+    // ESC关闭
+    if (e.key === 'Escape') closeSearch()
+    // Ctrl+K 切换
+    if (e.ctrlKey && e.key.toLowerCase() === 'k') {
+      e.preventDefault()
+      if (searchMask?.classList.contains('hidden')) {
+        openSearch()
+      } else {
+        closeSearch()
+      }
+    }
+  })
+
+  // input event
+  const handleInput = async (e: Event) => {
+    if (searchResults) {
+      searchResults.innerHTML = ''
+    }
+    const target = e.target as HTMLInputElement
+    const q = target.value.trim()
+    const reqId = ++searchReqId
+    if (q === '') {
+      const tip = document.createElement('div')
+      tip.className = 'search-results-item py-8'
+      tip.innerHTML = `
+        <div class="flex items-center justify-center gap-2 select-none">
+          <span class="icon-[material-symbols--keyboard] size-5 text-muted-foreground"></span>
+          <span class="text-muted-foreground">Type to search</span>
+        </div>
+      `
+      searchResults?.appendChild(tip)
+      return
+    }
+    if (import.meta.env.PROD) {
+      const pagefindQuery = exactMode ? `"${q}"` : q
+      const search = await pagefind.debouncedSearch(pagefindQuery)
+
+      // 如果期间产生了新的请求，丢弃本次结果，避免重复提示或错位渲染
+      if (reqId !== searchReqId || searchInput?.value.trim() !== q) return
+
+      // 添加结果长度判断
+      if (!search?.results || search.results.length === 0) {
+        const noResults = document.createElement('div')
+        noResults.className = 'search-results-item py-8'
+        noResults.innerHTML = `
+          <div class="flex items-center justify-center gap-2 select-none">
+            <span class="icon-[material-symbols--help-outline] size-5 text-muted-foreground"></span>
+            <span class="text-muted-foreground">No results found</span>
+          </div>
+        `
+        searchResults?.appendChild(noResults)
+        return
+      }
+
+      if(search?.results){
+        for (const result of search?.results) {
+        const data = await result.data()
+        // 显示主结果
+        const resultItem = document.createElement('a')
+        resultItem.href = data.url
+        resultItem.className = 'search-results-item'
+        resultItem.innerHTML = `
+          <div class="search-results-title">${data.meta.title}</div>
+          <div class="search-results-excerpt">${data.excerpt}</div>
+        `
+        resultItem.addEventListener('click', closeSearchIn)
+        searchResults?.appendChild(resultItem)
+
+        // 显示子结果（如果有）
+        if (data.sub_results) {
+          for (const subResult of data.sub_results) {
+            if (subResult.excerpt === data.excerpt) continue;
+
+            const cleanTitle = subResult.title.replace(/\s*[Hh][1-6]$/g, '');
+
+            if (!cleanTitle) continue; // 跳过空标题
+
+            const subItem = document.createElement('a')
+            subItem.href = subResult.url
+            subItem.className = 'search-results-item sub-result pl-4 border-l-2 border-accent'
+            subItem.innerHTML = `
+              <div class="search-results-title text-sm opacity-80">${cleanTitle}</div>
+              <div class="search-results-excerpt text-xs">${subResult.excerpt}</div>
+            `
+            subItem.addEventListener('click', closeSearchIn)
+            searchResults?.appendChild(subItem)
+          }
+        }
+      }
+      }
+    } else {
+      const noResults = document.createElement('div')
+      noResults.className = 'search-results-item py-8'
+      noResults.innerHTML = `
+        <div class="flex items-center justify-center gap-2 select-none">
+          <span class="icon-[material-symbols--help-outline] size-5 text-muted-foreground"></span>
+          <span class="text-muted-foreground">No results in development mode</span>
+        </div>
+      `
+      searchResults?.appendChild(noResults)
+    }
+  }
+
+  searchInput?.addEventListener('input', handleInput)
+</script>
+
+{import.meta.env.PROD &&
+  <script is:inline define:vars={{scriptUrl: ('/pagefind/pagefind.js')}}>
+    async function loadPagefind() {
+      const pagefind = await import(scriptUrl)
+
+      await pagefind.options({
+        'excerptLength': 20,
+        'showSubResults': true,
+      })
+
+      pagefind.init()
+      window.pagefind = pagefind
+      pagefind.search('')
+    }
+
+    if (!window.pagefind) loadPagefind()
+  </script>}

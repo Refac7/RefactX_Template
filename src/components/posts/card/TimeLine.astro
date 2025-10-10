@@ -1,0 +1,74 @@
+---
+import { formatDate } from '~/lib/utils'
+import PostTag from '~/components/posts/base/PostTag.astro'
+import type { CardProps } from './List.astro'
+
+interface Props extends CardProps {}
+
+const { post }: Props = Astro.props
+---
+
+<article class="group relative pl-10 pr-4 sm:pr-32 md:pr-44">
+  <div class="absolute left-0 top-0 h-full flex flex-col items-center">
+    <div class="h-2 w-2 rounded-full bg-primary/20 group-hover:bg-primary transition-colors z-10 mt-[0.25rem] sm:mt-[0.5rem]"></div>
+    <div class="flex-1 w-0.5 bg-gradient-to-b from-transparent via-muted-foreground/20 to-transparent"></div>
+  </div>
+
+  <div class="absolute right-0 top-[0.1rem] hidden sm:flex items-end gap-2">
+    <div class="flex items-center gap-1.5">
+      <span class="icon-[ph--calendar-blank] w-3.5 h-3.5 text-muted-foreground/70"></span>
+      <time class="text-sm text-muted-foreground whitespace-nowrap">
+        {formatDate(post.data.pubDate)}
+      </time>
+    </div>
+    {
+      post.data.updatedDate && (
+        <div class="flex items-center gap-1.5">
+          <span class="icon-[ph--clock-clockwise-light] w-3.5 h-3.5 text-primary/70" />
+          <time class="text-sm text-muted-foreground whitespace-nowrap">{formatDate(post.data.updatedDate)}</time>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="pb-8 group-last:pb-0">
+    <div class="flex flex-col sm:block">
+      <div class="sm:hidden">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="flex items-center gap-1.5">
+            <span class="icon-[ph--calendar-blank] w-3 h-3 text-muted-foreground/70"></span>
+            <time class="text-xs text-muted-foreground">
+              {formatDate(post.data.pubDate)}
+            </time>
+          </div>
+          {
+            post.data.updatedDate && (
+              <div class="flex items-center gap-1.5">
+                <span class="icon-[ph--clock-clockwise-light] w-3 h-3 text-primary/70" />
+                <time class="text-xs text-muted-foreground/70">{formatDate(post.data.updatedDate)}</time>
+              </div>
+            )
+          }
+        </div>
+      </div>
+
+      <a href={`/posts/${post.slug}`} class="block group/title">
+        <h2 class="text-base font-medium text-foreground/90 group-hover:text-primary transition-colors">
+          {post.data.title}
+        </h2>
+        {post.data.description && <p class="mt-2 text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed">{post.data.description}</p>}
+      </a>
+
+      {
+        post.data.tags?.length > 0 && (
+          <div class="mt-2.5 flex flex-wrap gap-1.5">
+            {post.data.tags.slice(0, 3).map((tag) => (
+              <PostTag tag={tag} size="sm" />
+            ))}
+            {post.data.tags.length > 3 && <span class="text-xs text-muted-foreground/60">+{post.data.tags.length - 3} more</span>}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</article>

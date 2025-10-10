@@ -1,0 +1,126 @@
+---
+import { SITE, SKILLSSHOWCASE_CONFIG, SOCIAL_LINKS } from '~/config.ts'
+import { GITHUB_CONFIG, POSTS_CONFIG } from '~/config.ts'
+import { postsSort } from '~/lib/utils'
+import { getCollection } from 'astro:content'
+import Layout from '~/layouts/Layout.astro'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import GithubContributions from '~/components/base/GithubContributions.tsx'
+import SocialLink from '~/components/base/SocialLink.astro'
+import List from '~/components/posts/card/List.astro'
+import SkillsShowcase from '~/components/base/SkillsShowcase.astro'
+
+const { ENABLED, GITHUB_USERNAME, TOOLTIP_ENABLED } = GITHUB_CONFIG
+const { size, type } = POSTS_CONFIG.homePageConfig
+const { SKILLS_ENABLED, SKILLS_DATA } = SKILLSSHOWCASE_CONFIG
+
+const allPosts = await getCollection('posts')
+const posts = postsSort(allPosts).slice(0, size)
+---
+
+<Layout title="主页" description={SITE.description}>
+  <div class="relative z-[1]">
+    <div class="min-h-[90vh] flex px-6 sm:px-6 md:px-8">
+      <div class="max-w-3xl mx-auto w-full flex flex-col">
+        <!-- 上部内容 -->
+        <div class="space-y-4 py-8">
+          <h1 class="space-y-3">
+            <span class="block text-5xl font-medium text-gray-900 dark:text-white text-left mb-4">
+            Hi, there!
+          </h1>
+          <div class="flex items-center space-x-3 mt-3 pl-1">
+            <span class="text-xs text-gray-500 dark:text-gray-400 font-mono">v1.5.0 INDEV</span>
+            <span class="text-xs text-gray-300 dark:text-gray-600 select-none">|</span>
+            <span class="text-xs text-gray-400 dark:text-gray-500 font-mono tracking-widest select-none">//////////////////////</span>
+          </div>
+          <p class="text-gray-600 dark:text-gray-300">
+            欢迎踏入 RefactX 的星河 在这里，代码与美学交织， 为开发者点亮一盏现代而优雅的灯塔—— 一款以 Astro 打造的灵感之境。          </p>
+          <div class="mt-6">
+            <a href="/projects" class="px-4 py-3 bg-black dark:bg-white text-white dark:text-black shadow hover:bg-red-600">
+              Explore Projects
+            </a>
+          </div>
+        </div>
+
+        <!-- 底部内容 - 左对齐 -->
+        <div class="mt-auto mb-10">
+          <div class="font-normal text-black dark:text-white mb-2 text-left">
+            <p class="text-lg md:text-xl font-bold mb-4">
+              <span class="inline-block align-baseline w-3 h-3 bg-red-500 mr-2" style="vertical-align: middle;"></span>设计 / Design – BLACK® Design
+            </p>
+            <p class="text-gray-500 dark:text-gray-400 text-base">
+              形体是简单而纯粹的，它不是完整的群体，每个形体都指向其复杂性，并最终被复杂性联系在一起。
+            </p>
+          </div>
+          <hr class="border-t-1 border-black dark:border-white my-6" />
+
+          <div class="flex items-center mb-5">
+            <!-- 左侧：社交图标组，保留 gap-4 -->
+            <div class="flex gap-4">
+              {SOCIAL_LINKS.map((item) => (
+                <SocialLink
+                  href={item.url}
+                  icon={item.icon}
+                  aria-label={`${item.name} 的链接`}
+                  count={item.count}
+                  label="关注者"
+                  class="hover:scale-105 transition-transform"
+                />
+              ))}
+            </div>
+
+            <!-- 右侧：友链按钮，用 ml-auto 推右 -->
+            <!-- 友链按钮 -->
+            <a
+              href="/friends"
+              class="ml-auto inline-flex items-center gap-1 text-ml font-bold text-gray-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
+            >
+              <span class="icon-[mdi--link] size-6" />
+              <span>友链 / Links</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {ENABLED && (
+      <>
+        <SectionDivider />
+        <div class="py-8 pb-10 px-6 max-md:px-6">
+          <div class="px-2 max-md:px-0">
+            <h2 class="font-bold text-2xl sm:text-3xl">动态聚焦</h2>
+            <p class="text-muted-foreground mb-6 mt-1">近期代码贡献记录</p>
+          </div>
+          <GithubContributions
+            username={GITHUB_USERNAME}
+            tooltipEnabled={TOOLTIP_ENABLED}
+            client:load
+            transition:animate="none"
+          />
+        </div>
+      </>
+    )}
+
+    {SKILLS_ENABLED && SKILLS_DATA.length > 0 && (
+      <>
+        <SectionDivider />
+        <div class="py-8 pb-10 px-6 max-md:px-6">
+          <div class="px-2 max-md:px-0">
+            <h2 class="font-bold text-2xl sm:text-3xl">技术栈</h2>
+            <p class="text-muted-foreground mb-6 mt-1">以下是我常用的技术：</p>
+          </div>
+          <SkillsShowcase skillsData={SKILLS_DATA} />
+        </div>
+      </>
+    )}
+
+    <SectionDivider />
+    <div class="py-8 pb-10 px-6 sm:px-8">
+      <h2 class="font-bold text-2xl sm:text-3xl">文章</h2>
+      <p class="text-muted-foreground mb-6 mt-1">
+        最近更新的 {posts.length} 篇文章
+      </p>
+      <List {posts} {type} heroImageLayout={POSTS_CONFIG.homePageConfig?.heroImageLayout} />
+    </div>
+  </div>
+</Layout>

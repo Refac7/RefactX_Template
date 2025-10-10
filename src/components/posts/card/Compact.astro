@@ -1,0 +1,58 @@
+---
+import { formatDate } from '~/lib/utils'
+import PostTag from '~/components/posts/base/PostTag.astro'
+import type { CardProps } from './List.astro'
+
+interface Props extends CardProps {}
+
+const { post }: Props = Astro.props
+---
+
+<div class="group relative block py-6 border-b border-border/60 last:border-none">
+  <article class="relative z-1 flex flex-col gap-3 transform transition-transform duration-300 group-hover:translate-x-4">
+    <div class="flex sm:items-center gap-2 sm:gap-3 text-sm text-muted-foreground">
+      <span class="inline-flex items-center gap-1.5">
+        <span class="icon-[ph--calendar-blank] size-3.5 sm:size-4"></span>
+        <time datetime={post.data.pubDate.toISOString()} class="text-xs sm:text-sm">
+          {formatDate(post.data.pubDate)}
+        </time>
+      </span>
+      {
+        post.data.updatedDate && (
+          <span class="inline-flex items-center gap-1.5">
+            <span class="icon-[ph--clock-clockwise-light] size-3.5 sm:size-4" />
+            <time datetime={post.data.updatedDate.toISOString()} class="text-xs sm:text-sm">
+              {formatDate(post.data.updatedDate)}
+            </time>
+          </span>
+        )
+      }
+    </div>
+    <a href={`/posts/${post.slug}`} class="block -my-[2px]">
+      <h3 class="text-base sm:text-lg font-medium text-foreground group-hover:text-primary transition-colors">
+        {post.data.title}
+      </h3>
+      {post.data.description && <p class="mt-1.5 text-xs sm:text-sm text-muted-foreground/80 line-clamp-2">{post.data.description}</p>}
+    </a>
+
+    {
+      post.data.tags?.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-2">
+          {post.data.tags.slice(0, 4).map((tag) => (
+            <PostTag tag={tag} />
+          ))}
+          {post.data.tags.length > 4 && <span class="text-xs text-muted-foreground/60">+{post.data.tags.length - 4} more</span>}
+        </div>
+      )
+    }
+  </article>
+
+  {
+    post.data.recommend && (
+      <span class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 -translate-x-4 size-16 sm:size-20 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-primary/10 dark:text-primary/20 icon-[solar--star-rainbow-bold-duotone]" />
+    )
+  }
+
+  <div class="absolute left-0 top-0 h-full w-0.5 sm:w-1 scale-y-0 bg-accent/80 transition-transform duration-300 group-hover:scale-y-100">
+  </div>
+</div>

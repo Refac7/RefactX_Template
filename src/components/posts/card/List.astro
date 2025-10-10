@@ -1,0 +1,41 @@
+---
+import type { HeroImageLayout, PostCardType } from '~/types'
+import type { CollectionEntry } from 'astro:content'
+import Compact from './Compact.astro'
+import ImageShow from './ImageShow.astro'
+import TimeLine from './TimeLine.astro'
+import { cn } from '~/lib/utils'
+
+export type CardProps = {
+  post: CollectionEntry<'posts'>
+  index: number
+  heroImageLayout?: HeroImageLayout
+}
+
+const POST_CARD_COMPONENTS = {
+  'compact': Compact,
+  'image': ImageShow,
+  'time-line': TimeLine,
+} as const
+
+const POST_CARD_SPACING_CLASSES = {
+  'compact': '',
+  'image': 'space-y-16',
+  'time-line': '',
+} as const
+
+type Props = {
+  posts: CollectionEntry<'posts'>[]
+  type: PostCardType
+  customSpacing?: string
+  heroImageLayout?: HeroImageLayout
+}
+
+const { posts, type, customSpacing, heroImageLayout } = Astro.props
+const spacingClass = customSpacing || POST_CARD_SPACING_CLASSES[type]
+const PostCardElement = POST_CARD_COMPONENTS[type]
+---
+
+<div class={cn(spacingClass, 'content-visibility: auto')}>
+  {posts.map((post, index) => <PostCardElement {post} {index} {heroImageLayout} />)}
+</div>

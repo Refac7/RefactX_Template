@@ -1,0 +1,104 @@
+---
+import { cn } from '~/lib/utils'
+
+interface Props {
+  class?: string
+  id?: string
+}
+
+const { class: className, id = 'backToTopDesktop' } = Astro.props
+---
+
+<button
+  {id}
+  class={cn(
+    'group flex items-center justify-center size-9',
+    'bg-primary/4 hover:bg-primary/10',
+    'text-primary/70 hover:text-primary',
+    'transition-colors duration-200',
+    'dark:bg-primary/10 dark:hover:bg-primary/15',
+    'dark:text-primary/80 dark:hover:text-primary',
+    'cursor-pointer',
+    'opacity-0 invisible translate-y-4 transition-all duration-300 ease-out',
+    className
+  )}
+  aria-label="Back to top"
+>
+  <span class="icon-[ph--arrow-up] transition-transform duration-200 group-hover:-translate-y-0.5 size-4w"></span>
+</button>
+
+<script>
+  /**
+   * 处理滚动事件，控制回到顶部按钮的显示/隐藏
+   */
+  function handleScroll() {
+    // 获取所有以 backToTop 开头的按钮元素
+    const backToTopButtons = document.querySelectorAll('[id^="backToTop"]')
+    const footer = document.querySelector('footer')
+
+    backToTopButtons.forEach((button) => {
+      // 判断是否为移动端按钮
+      const isMobile = button.id === 'backToTopMobile'
+      // 基础显示条件：滚动超过 300px
+      let shouldShow = window.scrollY > 300
+
+      // 移动端特殊处理：接近 footer 时隐藏按钮，避免重叠
+      if (isMobile && footer && shouldShow) {
+        const footerTop = footer.getBoundingClientRect().top
+        const windowHeight = window.innerHeight
+        // 如果 footer 进入视口底部 100px 范围内，隐藏按钮
+        shouldShow = footerTop > windowHeight - 100
+      }
+
+      const buttonElement = button as HTMLElement
+      if (isMobile) {
+        // 移动端：滑动隐藏到屏幕外
+        if (shouldShow) {
+          button.classList.remove('opacity-0', 'invisible', 'translate-y-4')
+          buttonElement.style.transform = 'translateY(0)'
+          buttonElement.style.pointerEvents = 'auto'
+        } else {
+          button.classList.add('opacity-0', 'invisible')
+          // 滑动到屏幕外底部，完全避开交互区域
+          buttonElement.style.transform = 'translateY(120px)'
+          buttonElement.style.pointerEvents = 'none'
+        }
+      } else {
+        // 桌面端：保持原有动画
+        if (shouldShow) {
+          button.classList.remove('opacity-0', 'invisible', 'translate-y-4')
+        } else {
+          button.classList.add('opacity-0', 'invisible', 'translate-y-4')
+        }
+      }
+    })
+  }
+
+  /**
+   * 初始化回到顶部功能
+   * 绑定点击事件和滚动监听
+   */
+  function setupBackToTop() {
+    // 获取所有回到顶部按钮
+    const backToTopButtons = document.querySelectorAll('[id^="backToTop"]')
+
+    // 为每个按钮添加点击事件监听器
+    backToTopButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        // 平滑滚动到页面顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+    })
+
+    // 监听页面滚动事件
+    window.addEventListener('scroll', handleScroll)
+  }
+
+  if (document.readyState !== 'loading') {
+    setupBackToTop()
+  } else {
+    document.addEventListener('DOMContentLoaded', setupBackToTop)
+  }
+
+  document.addEventListener('astro:page-load', setupBackToTop)
+</script>

@@ -1,0 +1,110 @@
+---
+import { WALINE_CONFIG } from "~/config";
+---
+
+<div id="waline"></div>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@waline/client@v3/dist/waline.css"
+/>
+
+<style is:global>
+  /* 去掉 Waline 所有圆角 */
+  #waline .wl-editor,
+  #waline .wl-input,
+  #waline span.wl-badge,
+  #waline .wl-btn,
+  #waline .wl-comment,
+  #waline .wl-card,
+  #waline .wl-panel,
+  #waline .wl-header,
+  #waline .wl-gif-popup,
+  #waline .wl-emoji-popup,
+  #waline .wl-footer {
+    border-radius: 0 !important;
+    font-family: 'ShangguSansSC Variable', system-ui, -apple-system, sans-serif !important;
+  }
+
+  .wl-gif-tab {
+  display: none !important;
+  }
+
+
+  .wl-content,
+  .wl-content * {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* 浅色模式下的颜色设置 */
+  #waline {
+    --waline-theme-color: #000000 !important;
+    --waline-border-color: #F0F1F5 !important;
+    --waline-active-color: #dc2626 !important;
+    /* 设置字体 */
+    --waline-font-size: 1rem !important;
+    --waline-font-family: 'Onest Variable', 'Geist Variable', 'ShangguSansSC Variable', system-ui, -apple-system, sans-serif !important;
+  }
+
+  /* 深色模式下的颜色和背景设置 */
+  html.dark #waline {
+    --waline-theme-color: #ffffff !important;
+    --waline-active-color: #dc2626 !important;
+  }
+
+  html.dark #waline .wl-panel {
+    --waline-bgcolor: #09090B !important;
+    background-color: #09090B !important;
+  }
+
+  /* 禁用输入框获得焦点时的样式变化 */
+  #waline .wl-editor:focus,
+  #waline .wl-editor:focus-within,
+  #waline .wl-input:focus {
+    background-color: var(--waline-bgcolor) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+</style>
+
+<script src="https://unpkg.com/@waline/client@v3/dist/waline.umd.js" defer></script>
+<script define:vars={{ serverURL: WALINE_CONFIG.serverURL }}>
+function loadWaline() {
+  const container = document.querySelector('#waline');
+  if (!container) return;
+
+  const w = window.Waline;
+  if (!w) return;
+
+  const oldInstance = window.__walineInstance;
+  if (oldInstance && typeof oldInstance.destroy === 'function') {
+    try {
+      if (container.contains(container.firstChild) || container.childNodes.length > 0) {
+        oldInstance.destroy();
+      }
+    } catch (e) {
+      console.warn('Waline destroy failed:', e);
+    }
+  }
+
+  window.__walineInstance = w.init({
+    el: container,
+    serverURL: serverURL,  // 这里使用从 define:vars 传递过来的 serverURL
+    path: location.pathname.replace(/\/$/, ''),
+    lang: 'zh-CN',
+    pageview: true,
+    dark: 'html.dark',
+    requiredMeta: ['nick', 'mail'],
+    locale: { placeholder: '写点什么吧…' },
+    emoji: [],
+    imageUploader: false,
+    search: false,
+  });
+}
+
+window.addEventListener('DOMContentLoaded', loadWaline);
+document.addEventListener('pjax:complete', loadWaline);
+document.addEventListener('astro:page-load', loadWaline);
+</script>

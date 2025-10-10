@@ -1,0 +1,37 @@
+---
+import { FOOTER_LINKS } from '~/config'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import ThemeToggle from '~/components/theme/ThemeToggle'
+import FooterLink from '~/components/base/FooterLink.astro'
+---
+
+<SectionDivider position="bottom" />
+<footer class="flex-none border-x border-border/50 max-w-3xl mx-auto">
+  <div class="py-4">
+    <div class="pb-8">
+      <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm font-medium text-muted-foreground pb-4 px-6 sm:px-8 border-b border-border/50">
+        {FOOTER_LINKS.map((link) => <FooterLink href={link.url}>{link.name}</FooterLink>)}
+      </div>
+      <div class="text-sm text-muted-foreground px-6 sm:px-8 py-4">
+        <div class="items-center flex flex-wrap gap-4">
+          <a href="https://astro.build" target="_blank" rel="nofollow" class="items-center flex gap-1 dark:hover:text-white">
+            Built with <span class="icon-[lineicons--astro] size-4 inline"></span>
+          </a>
+          <a href="https://www.vercel.com" target="_blank" rel="nofollow" class="items-center flex gap-1 dark:hover:text-white">
+            Deployed on <span class="icon-[ri--vercel-line] size-4 inline mb-[1px]"></span>
+          </a>
+          <a href="https://github.com/Refac7/RefactX_Template" target="_blank" rel="nofollow" class="items-center flex gap-1 dark:hover:text-white">
+            Source on <span class="icon-[mingcute--github-fill] size-4 inline mb-[1px]"></span>
+          </a>
+          <a href="https://icp.gov.moe/?keyword=20252280" target="_blank" rel="nofollow" class="items-center flex gap-1 dark:hover:text-white">
+            Registered on 萌ICP备 20252280号
+          </a>
+          <div class="grow"></div>
+          <div transition:persist="footer-theme-toggle">
+            <ThemeToggle client:load />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

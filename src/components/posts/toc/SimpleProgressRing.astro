@@ -1,0 +1,72 @@
+---
+interface Props {
+  class?: string
+  size?: number
+  strokeWidth?: number
+}
+
+const { class: className = '', size = 32, strokeWidth = 2 } = Astro.props
+
+const radius = (size - strokeWidth) / 2
+const circumference = 2 * Math.PI * radius
+---
+
+<div class={`inline-block ${className}`}>
+  <svg width={size} height={size} class="transform -rotate-90">
+    <circle cx={size / 2} cy={size / 2} r={radius} stroke="currentColor" stroke-width={strokeWidth} fill="none" class="text-border/80"
+    ></circle>
+    <circle
+      cx={size / 2}
+      cy={size / 2}
+      r={radius}
+      stroke="currentColor"
+      stroke-width={strokeWidth}
+      fill="none"
+      class="text-primary transition-all duration-150 ease-out"
+      stroke-linecap="round"
+      stroke-dasharray={circumference}
+      stroke-dashoffset={circumference}
+      data-progress-ring></circle>
+  </svg>
+</div>
+
+<script>
+  /**
+   * 简单进度圆环
+   */
+  function setupSimpleProgressRing() {
+    const progressRings = document.querySelectorAll('[data-progress-ring]')
+
+    if (!progressRings.length) return
+
+    function updateProgress() {
+      const scrollTop = window.scrollY
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      const scrollPercent = Math.min(Math.max(scrollTop / docHeight, 0), 1)
+
+      progressRings.forEach((ring) => {
+        const circumference = 2 * Math.PI * parseFloat(ring.getAttribute('r') || '0')
+        const offset = circumference - scrollPercent * circumference
+        ;(ring as SVGCircleElement).style.strokeDashoffset = offset.toString()
+      })
+    }
+
+    let ticking = false
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateProgress()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    window.addEventListener('scroll', onScroll)
+    updateProgress()
+
+    return () => window.removeEventListener('scroll', onScroll)
+  }
+
+  document.addEventListener('astro:page-load', setupSimpleProgressRing)
+</script>

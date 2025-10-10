@@ -1,0 +1,168 @@
+---
+import type { MarkdownHeading } from 'astro'
+import { POSTS_CONFIG } from '~/config'
+import { cn } from '~/lib/utils'
+
+interface Props {
+  headings: MarkdownHeading[]
+  class?: string
+}
+
+const { headings, class: className } = Astro.props
+
+// 优化过滤逻辑，减少遍历次数
+const filteredHeadings = headings.reduce(
+  (acc, heading) => {
+    if (heading.depth <= 4 && heading.text.trim()) {
+      acc.push({
+        ...heading,
+        text: heading.text.replace(/\s*[Hh][1-6]$/g, ''),
+        order: acc.length + 1,
+      })
+    }
+    return acc
+  },
+  [] as (MarkdownHeading & { order: number })[]
+)
+
+// 计算相对缩进 - 基于实际存在的最小层级
+const minDepth = filteredHeadings.length > 0 ? Math.min(...filteredHeadings.map((h) => h.depth)) : 2
+const getRelativeIndentClass = (depth: number) => {
+  const relativeDepth = depth - minDepth
+  const indentMap = ['ml-0', 'ml-4', 'ml-8', 'ml-12'] // 最多支持4级相对缩进
+  return indentMap[relativeDepth] || 'ml-12'
+}
+---
+
+<div class={cn('hidden xl:block fixed top-30 right-[calc(50%-384px)] translate-x-full w-[clamp(12rem,18vw,18rem)]', className)}>
+  <nav class="p-4">
+    <h3 class="font-sans text-sm font-medium mb-4 text-foreground/80 flex items-center gap-2 pl-2">
+      <span class="icon-[fluent--list-20-filled] w-4 h-4 opacity-85"></span>
+      {POSTS_CONFIG.tocText}
+    </h3>
+    <div class="relative h-[calc(100vh-24rem)] overflow-hidden">
+      <ul
+        class="space-y-2 absolute w-full transition-transform duration-300 will-change-transform"
+        data-desktop-toc-list
+        style="content-visibility: auto;"
+      >
+        {
+          filteredHeadings.map((heading) => {
+            const depthClass = heading.depth === 1 ? 'font-medium text-foreground' : 'text-foreground/60 hover:text-foreground/90'
+
+            return (
+              <li class={cn(depthClass, getRelativeIndentClass(heading.depth) || '')}>
+                <a
+                  href={`#${heading.slug}`}
+                  data-desktop-heading-link
+                  class={cn(
+                    'group flex items-center text-sm min-h-[1.75rem] w-full overflow-hidden relative',
+                    'hover:bg-gradient-to-r hover:from-primary/10 dark:hover:from-primary/25 hover:to-transparent',
+                    'data-[active]:bg-gradient-to-r data-[active]:from-primary/10 dark:data-[active]:from-primary/25 data-[active]:to-transparent '
+                  )}
+                >
+                  <span class="font-mono flex items-center px-2 text-xs text-primary/50 group-hover:text-primary group-data-[active]:text-primary min-w-[2rem]">
+                    {heading.order.toString().padStart(2, '0')}
+                  </span>
+                  <span
+                    class="leading-[1.75rem] truncate pr-2 group-hover:text-primary group-data-[active]:text-primary"
+                    title={heading.text}
+                  >
+                    {heading.text}
+                  </span>
+                </a>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<script>
+  function updateActiveHeading() {
+    const headingElements = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id]')
+    const headingLinks = document.querySelectorAll('[data-desktop-heading-link]')
+    const tocList = document.querySelector('[data-desktop-toc-list]') as HTMLElement
+    const tocContainer = tocList?.parentElement as HTMLElement
+
+    if (!headingLinks.length) return
+
+    let currentActiveHeading: string | null = null
+    let scrollTimeout: number | null = null
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.intersectionRatio > 0) {
+            const id = entry.target.id
+            if (currentActiveHeading === id) return
+
+            currentActiveHeading = id
+            headingLinks.forEach((link) => {
+              if (link.getAttribute('href') === `#${id}`) {
+                link.setAttribute('data-active', '')
+
+                if (scrollTimeout) {
+                  window.cancelAnimationFrame(scrollTimeout)
+                }
+
+                scrollTimeout = window.requestAnimationFrame(() => {
+                  if (tocList && tocContainer) {
+                    const containerHeight = tocContainer.offsetHeight
+                    const activeLinkElement = link as HTMLElement
+                    const activeLinkTop = activeLinkElement.offsetTop
+                    const activeLinkHeight = activeLinkElement.offsetHeight
+                    const tocListHeight = tocList.offsetHeight
+
+                    let targetTransform = Math.max(0, activeLinkTop - containerHeight / 2 + activeLinkHeight / 2)
+                    targetTransform = Math.min(targetTransform, tocListHeight - containerHeight)
+
+                    tocList.style.transition = 'transform 0.3s ease-out'
+                    tocList.style.transform = `translateY(-${targetTransform}px)`
+                  }
+                })
+              } else {
+                link.removeAttribute('data-active')
+              }
+            })
+          }
+        })
+      },
+      {
+        rootMargin: '-96px 0px -85% 0px',
+        threshold: [0, 1],
+      }
+    )
+
+    headingElements.forEach((heading) => observer.observe(heading))
+
+    // 页面加载时检查当前可见的标题
+    setTimeout(() => {
+      const visibleHeading = Array.from(headingElements).find((heading) => {
+        const rect = heading.getBoundingClientRect()
+        return rect.top > 10 && rect.top < window.innerHeight * 0.33
+      })
+      if (visibleHeading) {
+        const link = document.querySelector(`[href="#${visibleHeading.id}"]`)
+        link?.setAttribute('data-active', '')
+      } else {
+        headingLinks[0]?.setAttribute('data-active', '')
+      }
+    }, 100)
+
+    // 清理函数
+    return () => observer.disconnect()
+  }
+
+  // 确保在页面内容加载完成后初始化
+  document.addEventListener('astro:page-load', () => {
+    const cleanup = updateActiveHeading()
+
+    // 在页面切换时清理
+    document.addEventListener('astro:before-swap', () => {
+      cleanup?.()
+    })
+  })
+</script>

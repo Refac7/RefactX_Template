@@ -1,0 +1,869 @@
+/* ===== Import Dependencies | 导入依赖 ===== */
+@import 'medium-zoom/dist/style.css';
+@import 'rehype-callouts/theme/vitepress';
+@import url('https://cdn.bootcdn.net/ajax/libs/KaTeX/0.16.9/katex.min.css');
+
+/* ===== Color Variables | 颜色变量 ===== */
+.markdown {
+  --text: #5c6170;
+  --text-deep: #18181b;
+  --heading: #18181b;
+  --links: #18181b;
+  --links-border: #e5e7eb;
+  --links-hover-border: #555;
+  --anchor: #D52C1B;
+  --hr-color: #e5e7eb;
+  --blockquote-border: #e0e5eb;
+  --table-text: #222;
+  --inline-code-bg: #f1f3f5;
+  --inline-code-text: #3b4252;
+}
+
+.dark .markdown {
+  --text: #a5a6b3;
+  --text-deep: #d5d5d6;
+  --heading: #d5d5d6;
+  --links: #e5e7eb;
+  --links-border: #555;
+  --links-hover-border: #e5e7eb;
+  --anchor: #818cf8;
+  --hr-color: #27272a;
+  --blockquote-border: #3f3f46;
+  --table-text: #d5d5d6;
+  --inline-code-bg: #1e1e20;
+  --inline-code-text: #c9d1d9;
+}
+
+/* ===== Base Styles | 基础样式 ===== */
+.markdown {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+/* ===== Typography | 排版 ===== */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  color: var(--heading);
+  font-family: var(--font-sans);
+  font-weight: 500 !important;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown h1 {
+  font-size: 2em;
+  margin-top: 0;
+  margin-bottom: 0.8888889em;
+  line-height: 1.1111111;
+}
+.markdown h2 {
+  font-size: 1.5em;
+  margin-top: 2em;
+  margin-bottom: 1em;
+  line-height: 1.3333333;
+}
+.markdown h3 {
+  font-size: 1.25em;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  line-height: 1.6;
+}
+.markdown h4 {
+  font-size: 1.125em;
+  line-height: 1.5;
+}
+.markdown h5 {
+  font-size: 1em;
+  line-height: 1.4;
+}
+.markdown h6 {
+  font-size: 0.875em;
+  line-height: 1.3;
+}
+
+/* ===== Content Elements | 内容元素 ===== */
+.markdown p,
+.markdown li {
+  font-size: 1em;
+}
+.markdown p {
+  margin: 1.25em 0;
+}
+.markdown strong {
+  font-weight: 600;
+  color: var(--table-text);
+}
+.markdown b {
+  color: var(--text-deep);
+}
+.markdown em {
+  color: inherit;
+  font-size: 1.05em;
+}
+
+/* ===== Links | 链接 ===== */
+.markdown a {
+  color: var(--links);
+  text-decoration: none;
+  font-weight: inherit;
+  border-bottom: 1px solid var(--links-border);
+  transition: border 0.3s ease-in-out;
+}
+.markdown a:hover {
+  border-bottom: 1px solid var(--links-hover-border);
+}
+.markdown a code {
+  color: inherit;
+}
+
+/* ===== Lists | 列表 ===== */
+.markdown ol > li,
+.markdown ul > li {
+  position: relative;
+  padding-left: 1.75em;
+  margin: 0.5em 0;
+}
+
+.markdown ol > li::before {
+  content: counter(list-item, var(--list-counter-style, decimal)) '.';
+  position: absolute;
+  font-weight: 400;
+  left: 0;
+}
+
+.markdown ul > li::before {
+  content: '';
+  position: absolute;
+  background-color: var(--text);
+  border-radius: 50%;
+  width: 0.4em;
+  height: 0.4em;
+  top: calc(0.875em - 0.2em);
+  left: 0.2em;
+  opacity: 0.8;
+}
+
+.markdown ol,
+.markdown ul {
+  margin: 1.25em 0;
+  list-style-type: none;
+}
+
+.markdown > ul > li p {
+  margin: 0.75em 0;
+}
+.markdown > ol > li > *:first-child {
+  margin-top: 1.25em;
+}
+.markdown > ol > li > *:last-child {
+  margin-bottom: 1.25em;
+}
+.markdown ul ul,
+.markdown ul ol,
+.markdown ol ul,
+.markdown ol ol {
+  margin: 0.75em 0;
+}
+
+/* ===== Block Elements | 块级元素 ===== */
+.markdown hr {
+  border-color: rgba(125, 125, 125, 0.3);
+  margin: 2em auto;
+}
+
+.markdown blockquote {
+  font-weight: 500;
+  font-style: italic;
+  color: inherit;
+  border-left-width: 0.25rem;
+  border-color: rgba(125, 125, 125, 0.3);
+  quotes: '\201C' '\201D' '\2018' '\2019';
+  margin: 1.6em 0;
+  padding-left: 1em;
+}
+
+.markdown blockquote > * {
+  opacity: 0.7;
+}
+.markdown blockquote > :first-child {
+  margin-top: 0;
+}
+.markdown blockquote > :last-child {
+  margin-bottom: 0;
+}
+.markdown blockquote p:first-of-type::before {
+  content: open-quote;
+}
+.markdown blockquote p:last-of-type::after {
+  content: close-quote;
+}
+
+/* ===== Code | 代码 ===== */
+.markdown code {
+  color: var(--inline-code-text);
+  font-family: var(--font-dm-mono);
+  font-size: 0.875em;
+}
+
+.markdown pre {
+  overflow-x: auto;
+  font-size: 0.9375em;
+  line-height: 1.7142857;
+  margin: 1.7142857em 0;
+  border-radius: 0.375rem;
+  padding: 0.8571429em 1.1428571em;
+}
+
+.markdown pre code {
+  background-color: transparent;
+  border-width: 0 !important;
+  border-radius: 0;
+  padding: 0;
+  font-weight: 400;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+.markdown pre code::before,
+.markdown pre code::after {
+  content: none;
+}
+.markdown p code::before,
+.markdown p code::after {
+  content: none;
+}
+
+.markdown :where(code):not(:where(pre *, a *)) {
+  background-color: var(--inline-code-bg);
+  color: var(--inline-code-text);
+  padding: 0.2rem 0.3rem;
+  word-wrap: break-word;
+}
+
+.markdown h2 code {
+  font-size: 0.875em;
+}
+.markdown h3 code {
+  font-size: 0.9em;
+}
+
+/* ===== Tables | 表格 ===== */
+.markdown table {
+  width: 100%;
+  table-layout: auto;
+  text-align: left;
+  font-size: 0.9375em;
+  line-height: 1.7142857;
+}
+
+.markdown thead {
+  color: var(--table-text);
+  font-weight: 600;
+  border-bottom-width: 1px;
+  border-bottom-color: #8882;
+}
+
+.markdown thead th {
+  vertical-align: bottom;
+  padding: 0 0.5714286em 0.5714286em;
+}
+
+.markdown tbody tr {
+  border-bottom-width: 1px;
+  border-bottom-color: #8882;
+}
+
+.markdown tbody tr:last-child {
+  border-bottom-width: 0;
+}
+.markdown tbody td {
+  vertical-align: top;
+  padding: 0.5714286em;
+}
+.markdown thead th,
+.markdown tbody td:first-child {
+  white-space: nowrap;
+}
+.markdown thead th:first-child,
+.markdown tbody td:first-child {
+  padding-left: 0;
+}
+.markdown thead th:last-child,
+.markdown tbody td:last-child {
+  padding-right: 0;
+}
+
+/* ===== Media | 媒体 ===== */
+.markdown img {
+  margin: 2em auto;
+  will-change: transform, filter;
+}
+
+.markdown figure img {
+  margin: 0;
+}
+.markdown video,
+.markdown figure {
+  margin: 2em 0;
+}
+.markdown figure > * {
+  margin: 0;
+}
+
+.markdown figure figcaption {
+  color: #6b7280;
+  font-size: 0.875em;
+  line-height: 1.4285714;
+  margin-top: 0.8571429em;
+  text-align: center;
+}
+
+.dark .markdown figure figcaption {
+  color: #a5a6b3;
+}
+.dark .markdown img.noDarken {
+  filter: none !important;
+}
+.dark .markdown img.darken {
+  filter: brightness(0.75) contrast(1.1);
+}
+.dark image-figure-polaroid img {
+  filter: none !important;
+}
+
+.dark .markdown img.medium-zoom-image,
+.dark .markdown a img,
+.dark .markdown figure img {
+  transition:
+    filter 0.2s ease,
+    transform 0.2s cubic-bezier(0.2, 0, 0.2, 1) !important;
+}
+
+/* ===== Spacing | 间距 ===== */
+.markdown hr + *,
+.markdown h2 + *,
+.markdown h3 + *,
+.markdown h4 + *,
+.markdown h5 + *,
+.markdown h6 + * {
+  margin-top: 0;
+}
+.markdown > :first-child {
+  margin-top: 0;
+}
+.markdown > :last-child {
+  margin-bottom: 0;
+}
+
+/* ===== Interactive Elements | 交互元素 ===== */
+.markdown details summary {
+  padding-left: 1px;
+  cursor: pointer;
+}
+
+.markdown details:not(.expressive-code *) {
+  margin: 1.25em 0;
+}
+.markdown li details {
+  margin: 0.5em 0;
+}
+
+/* ===== Expressive Code | Expressive Code ===== */
+.expressive-code {
+  margin: 1em 0;
+}
+
+.expressive-code .copy button::before {
+  display: none;
+}
+.expressive-code .copy button {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+.expressive-code .copy button::after {
+  width: 1rem !important;
+  height: 1rem !important;
+  opacity: 0.5 !important;
+}
+.expressive-code .copy button:hover::after,
+.expressive-code .copy button:active::after {
+  opacity: 1 !important;
+}
+.expressive-code .copy .feedback {
+  font-size: 14px;
+  border-width: 0;
+}
+.expressive-code .ec-section summary .code {
+  display: flex;
+  align-items: center;
+}
+.expressive-code .ec-section summary svg {
+  display: inline-block;
+}
+.expressive-code .gutter .ln {
+  padding-inline: 1ch !important;
+}
+
+/* ===== Task Lists | 任务列表 ===== */
+.markdown ul[class='contains-task-list'] {
+  padding-left: 0;
+  list-style: none;
+}
+
+.markdown ul[class='contains-task-list'] > li::before {
+  display: none;
+}
+.markdown li[class='task-list-item'] {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  padding-left: 0;
+}
+
+.markdown .task-list-item input[type='checkbox'] {
+  margin-top: 0.3em;
+  width: 1em;
+  height: 1em;
+  border: 1px solid var(--text);
+  border-radius: 0.25em;
+  cursor: pointer;
+}
+
+.markdown .task-list-item input[type='checkbox']:checked {
+  background-color: var(--anchor);
+  border-color: var(--anchor);
+}
+
+.markdown figcaption {
+  font-size: 0.875em;
+}
+
+/* ===== Footnotes | 脚注 ===== */
+.markdown .footnotes {
+  margin-top: 3em;
+  font-size: 0.875em;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.markdown .footnotes::before {
+  content: '';
+  display: block;
+  width: 100%;
+  margin-bottom: 1.5em;
+  border-top: 1px solid var(--hr-color);
+}
+
+.markdown .sr-only#footnote-label {
+  display: none;
+}
+.markdown .footnotes li {
+  margin: 0.5em 0;
+}
+.markdown .footnotes li p {
+  margin: 0;
+}
+
+.markdown .footnotes .data-footnote-backref {
+  text-decoration: none;
+  opacity: 0.7;
+  cursor: pointer;
+  border: none;
+}
+
+.markdown .footnotes .data-footnote-backref:hover {
+  opacity: 1;
+}
+
+/* ===== Anchor Links | 锚点链接 ===== */
+.markdown h1:hover .header-anchor,
+.markdown h1:focus .header-anchor,
+.markdown h2:hover .header-anchor,
+.markdown h2:focus .header-anchor,
+.markdown h3:hover .header-anchor,
+.markdown h3:focus .header-anchor,
+.markdown h4:hover .header-anchor,
+.markdown h4:focus .header-anchor,
+.markdown h5:hover .header-anchor,
+.markdown h5:focus .header-anchor,
+.markdown h6:hover .header-anchor,
+.markdown h6:focus .header-anchor {
+  opacity: 0.6;
+}
+
+.markdown a.header-anchor {
+  float: left;
+  margin-left: -1.5em;
+  border: 0 !important;
+  opacity: 0;
+  font-size: 0.7em;
+  text-decoration: none;
+  color: var(--anchor);
+  transition: opacity 0.2s ease;
+}
+
+.markdown a.header-anchor:hover,
+.markdown a.header-anchor:focus {
+  text-decoration: none;
+  color: var(--anchor);
+  opacity: 1;
+}
+
+.markdown .header-anchor {
+  color: var(--anchor);
+}
+
+/* ===== Components | 组件 ===== */
+.callout {
+  padding-left: 16px;
+  font-size: 15px;
+  border-radius: 0;
+}
+
+.callout p {
+  margin: 1rem 0;
+}
+.callout-title-icon {
+  padding-right: 2px;
+}
+
+.dark .img-light {
+  display: none;
+}
+html:not(.dark) .img-dark {
+  display: none;
+}
+
+.rds-video {
+  z-index: 150;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 2rem 0;
+  transform: scale(1, 1) !important;
+}
+
+[data-link='github-acct'] > img,
+[data-link='github-repo']:not(.github) > img,
+[data-link='custom-url'] > img,
+[data-link='github-repo'].github > img,
+[data-link='npm-pkg'] > img {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 0;
+  margin: 0 0.3em 0.1em 0;
+}
+
+.rds-badge {
+  display: inline-block;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  margin-right: 0.5rem;
+  color: white;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  background-color: var(--badge-color-light, #a8a29e);
+}
+
+.dark .rds-badge {
+  color: black;
+  background-color: var(--badge-color-dark, #a8a29e);
+}
+
+[data-badge='n'] {
+  --badge-color-light: #f87171;
+  --badge-color-dark: #fecaca;
+}
+
+.new-tab-icon {
+  margin-left: 0.1rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.6em;
+}
+
+.external-link-cursor {
+  cursor: var(--external-link-cursor);
+}
+
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+  z-index: 300;
+}
+
+/* ===== KaTeX | KaTeX 公式 ===== */
+.markdown .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  padding: 0.5em 0;
+}
+
+.markdown .katex-display > .katex {
+  max-width: 100%;
+}
+.markdown .katex-display > .katex > .katex-html {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25em;
+}
+
+/* ===== Mobile Adaptation | 移动端适配 ===== */
+@media (max-width: 768px) {
+  .markdown {
+    font-size: 0.9375rem;
+  }
+  .markdown h1 {
+    font-size: 1.75em;
+    margin-bottom: 0.75em;
+  }
+  .markdown h2 {
+    font-size: 1.375em;
+    margin-top: 1.75em;
+    margin-bottom: 0.875em;
+  }
+  .markdown h3 {
+    font-size: 1.175em;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  .markdown h4,
+  .markdown h5,
+  .markdown h6 {
+    font-size: 1em;
+    margin-top: 1.25em;
+    margin-bottom: 0.5em;
+  }
+  .markdown p,
+  .markdown ul,
+  .markdown ol {
+    margin: 1em 0;
+  }
+  .markdown pre {
+    margin: 1.5em 0;
+    padding: 1em;
+    font-size: 0.875em;
+  }
+  .markdown blockquote {
+    margin: 1.25em 0;
+    padding-left: 0.875em;
+  }
+  .markdown > img,
+  .markdown > video {
+    margin: 1.5em 0;
+  }
+  .markdown table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.875em;
+  }
+  .markdown thead th,
+  .markdown tbody td {
+    min-width: 8em;
+    padding: 0.5em;
+  }
+  .markdown tbody td {
+    word-break: break-word;
+  }
+  .markdown a.header-anchor {
+    margin-left: -1.25em;
+    font-size: 0.75em;
+  }
+}
+
+/* ===== LQIP Styles | LQIP 样式 ===== */
+[style*='--lqip:']:where([loading='lazy'], [preload='none'], .force-lqip) {
+  --lqip-ca: mod(round(down, calc((var(--lqip) + 524288) / 262144)), 4);
+  --lqip-cb: mod(round(down, calc((var(--lqip) + 524288) / 65536)), 4);
+  --lqip-cc: mod(round(down, calc((var(--lqip) + 524288) / 16384)), 4);
+  --lqip-cd: mod(round(down, calc((var(--lqip) + 524288) / 4096)), 4);
+  --lqip-ce: mod(round(down, calc((var(--lqip) + 524288) / 1024)), 4);
+  --lqip-cf: mod(round(down, calc((var(--lqip) + 524288) / 256)), 4);
+  --lqip-ll: mod(round(down, calc((var(--lqip) + 524288) / 64)), 4);
+  --lqip-aaa: mod(round(down, calc((var(--lqip) + 524288) / 8)), 8);
+  --lqip-bbb: mod(calc(var(--lqip) + 524288), 8);
+  --lqip-ca-clr: hsl(0 0% calc(var(--lqip-ca) / 3 * 100%));
+  --lqip-cb-clr: hsl(0 0% calc(var(--lqip-cb) / 3 * 100%));
+  --lqip-cc-clr: hsl(0 0% calc(var(--lqip-cc) / 3 * 100%));
+  --lqip-cd-clr: hsl(0 0% calc(var(--lqip-cd) / 3 * 100%));
+  --lqip-ce-clr: hsl(0 0% calc(var(--lqip-ce) / 3 * 100%));
+  --lqip-cf-clr: hsl(0 0% calc(var(--lqip-cf) / 3 * 100%));
+  --lqip-base-clr: oklab(
+    calc(var(--lqip-ll) / 3 * 0.6 + 0.2) calc(var(--lqip-aaa) / 8 * 0.7 - 0.35) calc((var(--lqip-bbb) + 1) / 8 * 0.7 - 0.35)
+  );
+  --lqip-stop10: 2%;
+  --lqip-stop20: 8%;
+  --lqip-stop30: 18%;
+  --lqip-stop40: 32%;
+  background-blend-mode:
+    hard-light, hard-light, hard-light, hard-light, hard-light, hard-light, overlay, overlay, overlay, overlay, overlay, overlay, normal;
+  background-image:
+    radial-gradient(
+      50% 75% at 16.67% 25%,
+      rgb(from var(--lqip-ca-clr) r g b / 50%),
+      rgb(from var(--lqip-ca-clr) r g b / calc(50% - var(--lqip-stop10) / 2)) 10%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(50% - var(--lqip-stop20) / 2)) 20%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(50% - var(--lqip-stop30) / 2)) 30%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(50% - var(--lqip-stop40) / 2)) 40%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop40) / 2)) 60%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop30) / 2)) 70%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop20) / 2)) 80%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop10) / 2)) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 83.33% 25%,
+      rgb(from var(--lqip-cc-clr) r g b / 50%),
+      rgb(from var(--lqip-cc-clr) r g b / calc(50% - var(--lqip-stop10) / 2)) 10%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(50% - var(--lqip-stop20) / 2)) 20%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(50% - var(--lqip-stop30) / 2)) 30%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(50% - var(--lqip-stop40) / 2)) 40%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop40) / 2)) 60%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop30) / 2)) 70%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop20) / 2)) 80%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop10) / 2)) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 50% 25%,
+      rgb(from var(--lqip-cb-clr) r g b / 50%),
+      rgb(from var(--lqip-cb-clr) r g b / calc(50% - var(--lqip-stop10) / 2)) 10%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(50% - var(--lqip-stop20) / 2)) 20%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(50% - var(--lqip-stop30) / 2)) 30%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(50% - var(--lqip-stop40) / 2)) 40%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop40) / 2)) 60%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop30) / 2)) 70%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop20) / 2)) 80%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop10) / 2)) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 16.67% 75%,
+      rgb(from var(--lqip-cd-clr) r g b / 50%),
+      rgb(from var(--lqip-cd-clr) r g b / calc(50% - var(--lqip-stop10) / 2)) 10%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(50% - var(--lqip-stop20) / 2)) 20%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(50% - var(--lqip-stop30) / 2)) 30%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(50% - var(--lqip-stop40) / 2)) 40%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop40) / 2)) 60%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop30) / 2)) 70%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop20) / 2)) 80%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop10) / 2)) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 83.33% 75%,
+      rgb(from var(--lqip-cf-clr) r g b / 50%),
+      rgb(from var(--lqip-cf-clr) r g b / calc(50% - var(--lqip-stop10) / 2)) 10%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(50% - var(--lqip-stop20) / 2)) 20%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(50% - var(--lqip-stop30) / 2)) 30%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(50% - var(--lqip-stop40) / 2)) 40%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop40) / 2)) 60%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop30) / 2)) 70%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop20) / 2)) 80%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop10) / 2)) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 50% 75%,
+      rgb(from var(--lqip-ce-clr) r g b / 50%),
+      rgb(from var(--lqip-ce-clr) r g b / calc(50% - var(--lqip-stop10) / 2)) 10%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(50% - var(--lqip-stop20) / 2)) 20%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(50% - var(--lqip-stop30) / 2)) 30%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(50% - var(--lqip-stop40) / 2)) 40%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop40) / 2)) 60%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop30) / 2)) 70%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop20) / 2)) 80%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop10) / 2)) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 16.67% 25%,
+      var(--lqip-ca-clr),
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-ca-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 50% 25%,
+      var(--lqip-cb-clr),
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cb-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 83.33% 25%,
+      var(--lqip-cc-clr),
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cc-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 16.67% 75%,
+      var(--lqip-cd-clr),
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cd-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 50% 75%,
+      var(--lqip-ce-clr),
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-ce-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    radial-gradient(
+      50% 75% at 83.33% 75%,
+      var(--lqip-cf-clr),
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop10))) 10%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop20))) 20%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop30))) 30%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(100% - var(--lqip-stop40))) 40%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop40))) 60%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop30))) 70%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop20))) 80%,
+      rgb(from var(--lqip-cf-clr) r g b / calc(var(--lqip-stop10))) 90%,
+      transparent
+    ),
+    linear-gradient(0deg, var(--lqip-base-clr), var(--lqip-base-clr));
+}

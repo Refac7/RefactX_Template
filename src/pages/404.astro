@@ -1,0 +1,81 @@
+---
+import Layout from '~/layouts/Layout.astro'
+---
+
+<Layout title="Page Not Found" description="404 Page">
+  <div class="not-found flex-1 flex justify-center font-mono min-h-[70vh]">
+    <div class="relative z-[1] w-full max-w-3xl py-12 px-8 text-sm">
+      <div class="flex items-center text-muted-foreground mb-2 animate-fade-in">
+        <span class="text-green-500 mr-2 w-4 text-center">$</span>
+        <span class="animate-typing" style="animation-delay: 0s;">Nice to meet you！</span>
+      </div>
+      <div class="flex items-center text-muted-foreground mb-2 animate-fade-in" style="animation-delay: 0.3s">
+        <span class="text-green-500 mr-2 w-4 text-center">$</span>
+        <span class="animate-typing" style="animation-delay: 0.3s">cd /home</span>
+      </div>
+      <div class="flex items-center text-muted-foreground mb-2 animate-fade-in" style="animation-delay: 0.5s">
+        <span class="text-red-500 mr-2 w-4 text-center">✗</span>
+        <span class="animate-typing" style="animation-delay: 0.5s">Error: Directory not found！</span>
+      </div>
+      <div class="flex items-center text-muted-foreground mb-2 animate-fade-in" style="animation-delay: 0.7s">
+        <span class="text-green-500 mr-2 w-4 text-center">$</span>
+        <span class="animate-typing text-muted-foreground/50" style="animation-delay: 0.7s">Available commands:</span>
+      </div>
+      <div class="flex items-center text-muted-foreground mb-2 ml-5 animate-fade-in" style="animation-delay: 0.9s">
+        <span class="text-blue-500 mr-2 w-4 text-center">›</span>
+        <span class="animate-typing cursor-pointer hover:text-foreground" style="animation-delay: 0.9s" onclick="history.back()">cd ..</span
+        >
+      </div>
+      <div class="flex items-center text-muted-foreground mb-2 ml-5 animate-fade-in" style="animation-delay: 1.1s">
+        <span class="text-blue-500 mr-2 w-4 text-center">›</span>
+        <span class="animate-typing cursor-pointer hover:text-foreground" style="animation-delay: 1.1s" onclick="window.location.href='/'"
+          >cd /</span
+        >
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .animate-typing {
+    animation: typing 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+  }
+
+  @keyframes typing {
+    from {
+      width: 0ch;
+    }
+    to {
+      width: var(--typing-width, 20ch);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+    will-change: transform;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.animate-typing').forEach((el) => {
+      const text = el.textContent || ''
+      ;(el as HTMLElement).style.setProperty('--typing-width', `${text.length}ch`)
+    })
+  })
+</script>

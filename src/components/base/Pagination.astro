@@ -1,0 +1,70 @@
+---
+import type { Page } from 'astro'
+import { POSTS_CONFIG } from '~/config'
+import { cn } from '~/lib/utils'
+
+interface Props {
+  page: Page<any>
+  baseUrl: string
+  class?: string
+}
+
+const { page, baseUrl, class: className = '' } = Astro.props
+
+// 处理大量页码的显示逻辑
+const getVisiblePages = (current: number, total: number) => {
+  if (total <= 7) return [...Array(total)].map((_, i) => i + 1)
+
+  if (current <= 3) return [1, 2, 3, 4, null, total]
+  if (current >= total - 2) return [1, null, total - 3, total - 2, total - 1, total]
+
+  return [1, null, current - 1, current, current + 1, null, total]
+}
+
+const visiblePages = getVisiblePages(page.currentPage, page.lastPage)
+---
+
+<nav aria-label="Pagination" class={cn('mt-8 sm:mt-16 flex flex-col items-center gap-4', className)}>
+  <div class="flex items-center gap-1 sm:gap-2">
+    <a
+      href={page.url.prev}
+      class={`inline-flex h-8 sm:h-9 items-center gap-0.5 sm:gap-1 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-colors ${
+        page.url.prev ? 'text-foreground hover:bg-muted cursor-pointer' : 'text-muted-foreground/40 cursor-not-allowed pointer-events-none'
+      }`}
+    >
+      <span class="icon-[ph--caret-left] size-3.5 sm:size-4"></span>
+      <span class="hidden sm:inline">{POSTS_CONFIG.prevPageText}</span>
+    </a>
+
+    <div class="flex items-center gap-1 sm:gap-1.5">
+      {
+        visiblePages.map((pageNum) =>
+          pageNum === null ? (
+            <span class="w-6 sm:w-9 text-center text-muted-foreground text-xs sm:text-sm">...</span>
+          ) : (
+            <a
+              href={pageNum === 1 ? baseUrl : `${baseUrl}/${pageNum}`}
+              class={`inline-flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center text-xs sm:text-sm transition-colors ${
+                page.currentPage === pageNum
+                  ? 'text-primary font-medium border-primary/20 border'
+                  : 'text-foreground/80 hover:text-foreground hover:bg-muted'
+              }`}
+            >
+              {pageNum}
+            </a>
+          )
+        )
+      }
+    </div>
+
+    <a
+      href={page.url.next}
+      class={`inline-flex h-8 sm:h-9 items-center gap-0.5 sm:gap-1  px-2 sm:px-4 text-xs sm:text-sm font-medium transition-colors ${
+        page.url.next ? 'text-foreground hover:bg-muted cursor-pointer' : 'text-muted-foreground/40 cursor-not-allowed pointer-events-none'
+      }`}
+    >
+      <span class="hidden sm:inline">{POSTS_CONFIG.nextPageText}</span>
+      <span class="icon-[ph--caret-right] size-3.5 sm:size-4"></span>
+    </a>
+  </div>
+</nav>

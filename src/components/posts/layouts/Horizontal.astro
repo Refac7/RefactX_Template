@@ -1,0 +1,85 @@
+---
+import { formatDate } from '~/lib/utils'
+import Prose from '~/components/posts/base/Prose.astro'
+import ZoomImage from '~/components/base/ZoomImage.astro'
+
+interface Props {
+  frontmatter: any
+  minutesRead?: string
+}
+
+const { frontmatter, minutesRead } = Astro.props
+---
+
+<article class="relative fade-up">
+  <header class="px-6 sm:px-8 py-8 sm:py-10 border-b border-border/50">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex flex-wrap items-center gap-4 text-sm text-muted-foreground/85 mb-8">
+        <div class="flex items-center gap-1.5">
+          <span class="icon-[ph--calendar-blank] w-4 h-4 opacity-85"></span>
+          <time datetime={frontmatter.pubDate.toISOString()}>
+            {formatDate(frontmatter.pubDate)}
+          </time>
+        </div>
+        {
+          frontmatter.updatedDate && (
+            <div class="flex items-center gap-1.5">
+              <span class="icon-[ph--clock-clockwise-light] w-4 h-4 opacity-85" />
+              <time datetime={frontmatter.updatedDate.toISOString()}>{formatDate(frontmatter.updatedDate)}</time>
+            </div>
+          )
+        }
+        {
+          minutesRead && (
+            <div class="flex items-center gap-1.5">
+              <span class="icon-[mdi--clock-outline] w-4 h-4 opacity-85" />
+              <span>{minutesRead} mins 阅读</span>
+            </div>
+          )
+        }
+      </div>
+      <div class="flex flex-col md:flex-row gap-8 md:gap-12 md:items-center">
+        <div class="md:w-[55%] space-y-6">
+          <div class="space-y-4">
+            <h1
+              data-pagefind-body
+              class="text-2xl sm:text-3xl font-serif leading-tight tracking-wide bg-gradient-to-r from-foreground/90 to-foreground/70 bg-clip-text text-transparent"
+            >
+              {frontmatter.title}
+            </h1>
+            {
+              frontmatter.description && (
+                <p class="text-base sm:text-lg text-muted-foreground/90 leading-relaxed">{frontmatter.description}</p>
+              )
+            }
+            <div class="flex gap-2 sm:gap-3 flex-wrap pt-2">
+              {
+                frontmatter.tags?.map((tag: string) => (
+                  <a
+                    href={`/tags/${tag}`}
+                    class="px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs tracking-widest
+                     bg-muted text-tag-text border border-tag-border rounded-full
+                     hover:bg-tag-bg-hover hover:border-primary/30 hover:text-foreground
+                     transition-all duration-300 group"
+                    aria-label={`View posts tagged with ${tag}`}
+                  >
+                    <span class="opacity-90 group-hover:opacity-100">#{tag}</span>
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+        <div class="md:w-[45%]">
+          <ZoomImage src={frontmatter.heroImage} alt={frontmatter.title} class="w-full h-full object-fill" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="px-6 sm:px-8 py-10 max-w-4xl mx-auto">
+    <Prose>
+      <slot />
+    </Prose>
+  </main>
+</article>

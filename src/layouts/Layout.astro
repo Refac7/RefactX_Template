@@ -1,0 +1,35 @@
+---
+import '~/styles/global.css'
+import '~/styles/pro.css'
+import '~/styles/picture.css'
+import { SITE } from '~/config'
+import Head from '~/components/base/Head.astro'
+import Header from './Header.astro'
+import Footer from './Footer.astro'
+
+type Props = {
+  title: string
+  description: string
+  image?: string
+}
+
+const { title, description, image }: Props = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={`${title} | ${SITE.title}`} {description} {image} />
+  </head>
+  <body>
+    <Header />
+    <main class="relative fullPage flex-auto border-x border-border/50 max-w-3xl mx-auto">
+      <slot />
+    </main>
+    <Footer />
+    <div
+      class="pointer-events-none fixed bottom-0 left-0 h-28 w-full z-50 bg-background [mask-image:linear-gradient(transparent,hsl(var(--background)))]"
+    >
+    </div>
+  </body>
+</html>

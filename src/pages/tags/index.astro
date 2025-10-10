@@ -1,0 +1,95 @@
+---
+import { TAGS_CONFIG } from '~/config'
+import Layout from '~/layouts/Layout.astro'
+import { getCollection } from 'astro:content'
+
+const allPosts = await getCollection('posts')
+const tags = [...new Set(allPosts.flatMap((post) => post.data.tags || []))]
+
+// 按文章数量排序标签
+const sortedTags = tags
+  .map((tag) => ({
+    name: tag,
+    count: allPosts.filter((post) => post.data.tags?.includes(tag)).length,
+  }))
+  .sort((a, b) => b.count - a.count)
+
+const { title, description, introduce } = TAGS_CONFIG
+
+const maxCount = Math.max(...sortedTags.map((t) => t.count))
+---
+
+<Layout {title} {description}>
+  <div class="relative z-[1] py-8 pb-10 px-6 sm:px-8 min-h-[70vh]">
+    <!-- 标题区域 -->
+    <div class="mb-12">
+      <h1 class="tracking-tight text-4xl sm:text-5xl bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent pb-1.5">
+        {title}
+      </h1>
+      <div class="pro text-muted-foreground text-balance">
+        <p class="mt-2 text-sm sm:text-base">{introduce}</p>
+      </div>
+
+      <!-- 统计信息 -->
+      <div class="mt-6 flex items-center gap-6 text-sm text-muted-foreground">
+        <span class="flex items-center gap-1.5">
+          <span class="icon-[ph--hash] size-4"></span>
+          共 {tags.length} 个标签
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="icon-[ph--article] size-4"></span>
+          共 {allPosts.length} 篇文章
+        </span>
+      </div>
+    </div>
+
+    <!-- 标签网格 -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 fade-up" data-astro-transition="animate">
+      {
+        sortedTags.map((tag, index) => {
+          const sizeClass = tag.count >= 10 ? 'text-base' : tag.count >= 5 ? 'text-sm' : 'text-xs'
+          const priorityClass = index < 6 ? 'ring-2 ring-primary/10' : ''
+
+          return (
+            <a
+              href={`/tags/${tag.name}`}
+              class={`group relative block p-4 rounded-lg bg-background border border-border/40 hover:border-border hover:bg-muted/30 transition-all duration-200 ${priorityClass}`}
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <span class="icon-[ph--hash] size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <span class={`font-medium text-foreground group-hover:text-primary transition-colors truncate ${sizeClass}`}>
+                    {tag.name}
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-1 ml-2">
+                  <span class="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{tag.count}</span>
+                  <span class="icon-[ph--article] size-3.5 text-muted-foreground/70 group-hover:text-muted-foreground transition-colors" />
+                </div>
+              </div>
+
+              <div class="mt-3 w-full h-1 bg-muted/50 rounded-full overflow-hidden">
+                <div
+                  class="h-full bg-gradient-to-r from-primary/60 to-primary/80 rounded-full transition-all duration-300 group-hover:from-primary group-hover:to-primary/90"
+                  style={`width: ${Math.min((tag.count / maxCount) * 100, 100)}%`}
+                />
+              </div>
+
+              <div class="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/0 via-transparent to-accent/0 opacity-0 group-hover:from-primary/5 group-hover:to-accent/5 group-hover:opacity-100 transition-all duration-200 pointer-events-none" />
+            </a>
+          )
+        })
+      }
+    </div>
+
+    {
+      tags.length === 0 && (
+        <div class="text-center py-12">
+          <span class="icon-[ph--tag] size-12 text-muted-foreground/50 mx-auto block mb-4" />
+          <p class="text-muted-foreground">No tags available</p>
+        </div>
+      )
+    }
+  </div>
+</Layout>

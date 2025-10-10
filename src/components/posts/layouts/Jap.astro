@@ -1,0 +1,58 @@
+---
+import { formatDate } from '~/lib/utils'
+import Prose from '~/components/posts/base/Prose.astro'
+
+interface Props {
+  frontmatter: any
+  minutesRead?: string
+}
+
+const { frontmatter, minutesRead } = Astro.props
+---
+
+<article class="relative fade-up">
+  <div class="px-6 sm:px-8 py-8 sm:py-10">
+    <div class="max-w-4xl">
+      <header class="mb-14 space-y-8">
+        <div class="inline-block px-3 py-1.5 text-xs text-muted-foreground/70 bg-muted/40 rounded-sm font-medium">ARTICLE</div>
+
+        <div class="space-y-6">
+          <h1 class="text-2xl sm:text-3xl font-serif leading-[1.1] tracking-wide text-foreground/90" data-pagefind-body>
+            {frontmatter.title}
+          </h1>
+
+          {frontmatter.description && <p class="text-base text-muted-foreground/75 leading-[1.6] max-w-2xl">{frontmatter.description}</p>}
+        </div>
+
+        <div class="space-y-2 text-xs text-muted-foreground/55 font-mono tracking-wide">
+          <div>{formatDate(frontmatter.pubDate)}</div>
+          {frontmatter.updatedDate && <div>UPDATED {formatDate(frontmatter.updatedDate)}</div>}
+          {minutesRead && <div>{minutesRead} MIN READ</div>}
+        </div>
+
+        {
+          frontmatter.tags && frontmatter.tags.length > 0 && (
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-md">
+              {frontmatter.tags.map((tag: string) => (
+                <a
+                  href={`/tags/${tag}`}
+                  class="px-3 py-2 text-xs text-center 
+                       text-muted-foreground/65 bg-muted/35 
+                       hover:text-muted-foreground/85 hover:bg-muted/50
+                       transition-all duration-200 rounded-sm"
+                >
+                  {tag.toUpperCase()}
+                </a>
+              ))}
+            </div>
+          )
+        }
+        <div class="border-b border-border/60 my-6"></div>
+      </header>
+
+      <Prose>
+        <slot />
+      </Prose>
+    </div>
+  </div>
+</article>

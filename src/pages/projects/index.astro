@@ -1,0 +1,91 @@
+---
+import { cn } from '~/lib/utils'
+import { ProjectList, PROJECTS_CONFIG } from '~/config'
+import Layout from '~/layouts/Layout.astro'
+import SectionDivider from '~/components/base/SectionDivider.astro'
+import NumberTicker from '~/components/base/NumberTicker'
+
+const { title, description, introduce } = PROJECTS_CONFIG
+---
+
+<Layout {title} {description}>
+  <div class="relative z-[1] py-8 pb-10">
+    <div class="px-6 sm:px-8">
+      <h1 class="tracking-tight text-5xl bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent pb-1.5">{title}</h1>
+      <div class="pro text-muted-foreground">
+        <p class="mt-2">{introduce}</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 fade-up">
+      {
+        ProjectList.map((project, index) => {
+          return (
+            <div>
+              <div class="group relative hover:bg-muted/30 dark:hover:bg-muted/30 transition-colors duration-300 px-8 py-4 ">
+                <div class="absolute right-8 top-4 hidden sm:block">
+                  {project.type == 'icon' && <span class={cn('size-10', project.icon)} />}
+                  {project.type == 'image' && <img src={project.icon} alt="icon" class={cn('size-10', project.imageClass)} />}
+                </div>
+                <a
+                  href={project.website}
+                  target="_blank"
+                  class="inline-flex items-center justify-between font-semibold font-serif hover:text-primary transition-colors text-xl"
+                >
+                  {project.name}
+                </a>
+                <p class="pr-0 sm:pr-14 text-muted-foreground mt-1">{project.description}</p>
+                <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 items-start sm:items-center justify-between ">
+                  <div class="flex gap-4">
+                    <div class="flex items-center py-1.5 gap-3">
+                      {project.star && (
+                        <>
+                          <span class="text-xs uppercase tracking-wide font-medium text-muted-foreground">Stars</span>
+                          <span class="font-mono font-semibold text-lg">
+                            <NumberTicker play value={project.star} client:load />
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    <div class="flex items-center py-1.5 gap-3">
+                      {project.fork && (
+                        <>
+                          <span class="text-xs uppercase tracking-wide font-medium text-muted-foreground">Forks</span>
+                          <span class="font-mono font-semibold text-lg">
+                            <NumberTicker play value={project.fork} client:load />
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-5 text-zinc-500 text-sm z-10">
+                    {project.website && (
+                      <a
+                        href={project.website}
+                        target="_blank"
+                        class="hover:text-zinc-600 dark:hover:text-zinc-100 flex items-center gap-1"
+                      >
+                        <span class="icon-[mdi--web] size-5" />
+                        <span>示例网站</span>
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        class="hover:text-zinc-600 dark:hover:text-zinc-100 flex items-center gap-1"
+                      >
+                        <span class="icon-[mdi--github] size-5" />
+                        <span>GitHub</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <SectionDivider className={index == ProjectList.length - 1 ? 'hidden' : ''} />
+            </div>
+          )
+        })
+      }
+    </div>
+  </div>
+</Layout>

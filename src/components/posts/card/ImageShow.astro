@@ -1,0 +1,94 @@
+---
+import type { HeroImageAspectRatio } from '~/types'
+import { formatDate } from '~/lib/utils'
+import { POSTS_CONFIG } from '~/config'
+import PostTag from '~/components/posts/base/PostTag.astro'
+import RecommendBadge from '~/components/posts/base/RecommendBadge.astro'
+import type { CardProps } from './List.astro'
+
+interface Props extends CardProps {}
+
+const { post, index, heroImageLayout }: Props = Astro.props
+
+const aspectRatioClass: Record<HeroImageAspectRatio, string> = {
+  '16/9': 'aspect-[16/9]',
+  '3/4': 'aspect-[3/4]',
+}
+
+const isVertical = post.data.heroImageAspectRatio === '3/4'
+const imagePosition = post.data.heroImageLayout || heroImageLayout || (index % 2 === 1 ? 'right' : 'left')
+const isReverse = imagePosition === 'right'
+const defaultHeroImage = POSTS_CONFIG.defaultHeroImage
+---
+
+<article class={`group flex flex-col md:flex-row gap-8 ${isReverse ? 'md:flex-row-reverse' : ''}`}>
+  <div class={`${isVertical ? 'md:w-1/4' : 'md:w-2/5'} flex flex-col overflow-hidden`}>
+    <a href={`/posts/${post.slug}`} class="block relative">
+      <div class={`${aspectRatioClass[post.data.heroImageAspectRatio]} overflow-hidden bg-muted/30 relative`}>
+        <div class="absolute inset-0 bg-gradient-to-br from-accent to-muted/50 animate-pulse"></div>
+        <img
+          src={post.data.heroImage || defaultHeroImage}
+          alt={post.data.title}
+          loading="eager"
+          decoding="async"
+          onload="this.parentElement.querySelector('div').style.display='none';this.style.opacity='1'"
+          class={`w-full h-full object-cover will-change-transform duration-300 group-hover:scale-105 dark:brightness-90 opacity-0`}
+        />
+      </div>
+    </a>
+    {
+      !isVertical && (
+        <a
+          href={`/posts/${post.slug}`}
+          class="hidden md:inline-flex mt-4 items-center gap-2 text-sm font-medium text-foreground/90 hover:text-primary transition-colors group/read"
+        >
+          {POSTS_CONFIG.readMoreText}
+          <span class="icon-[ph--arrow-right-light] size-4 transition-transform group-hover/read:translate-x-1" />
+        </a>
+      )
+    }
+  </div>
+
+  <div class={`w-full ${isVertical ? 'md:w-3/4' : 'md:w-3/5'} flex flex-col justify-start`}>
+    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 md:mb-4">
+      {post.data.recommend && <RecommendBadge />}
+      {post.data.tags?.map((tag) => <PostTag tag={tag} />)}
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-muted-foreground/90">
+      <time class="flex items-center gap-1.5">
+        <span class="icon-[ph--calendar-blank] size-3.5"></span>
+        {formatDate(post.data.pubDate)}
+      </time>
+
+      {
+        post.data.updatedDate && (
+          <time class="flex items-center gap-1.5">
+            <span class="icon-[ph--clock-clockwise-light] size-3.5" />
+            {formatDate(post.data.updatedDate)}
+          </time>
+        )
+      }
+    </div>
+
+    <a href={`/posts/${post.slug}`} class="mt-2 md:mt-3 group/title">
+      <h2 class="text-xl md:text-2xl font-medium transition-colors group-hover/title:text-primary line-clamp-2">
+        {post.data.title}
+      </h2>
+    </a>
+
+    {
+      post.data.description && (
+        <p class="text-xs sm:text-sm text-muted-foreground/80 mt-2 md:mt-3 line-clamp-2 leading-relaxed">{post.data.description}</p>
+      )
+    }
+
+    <a
+      href={`/posts/${post.slug}`}
+      class={`${isVertical ? 'md:inline-flex' : 'md:hidden'} mt-3 inline-flex items-center gap-2 text-sm font-medium text-foreground/90 hover:text-primary transition-colors group/read`}
+    >
+      {POSTS_CONFIG.readMoreText}
+      <span class="icon-[ph--arrow-right-light] size-4 transition-transform group-hover/read:translate-x-1"></span>
+    </a>
+  </div>
+</article>

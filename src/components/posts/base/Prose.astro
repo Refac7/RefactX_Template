@@ -1,0 +1,84 @@
+---
+import { POSTS_CONFIG } from '~/config'
+import { cn } from '~/lib/utils'
+
+interface Props {
+  class?: string
+}
+
+const { class: className } = Astro.props
+---
+
+<div class={cn('markdown', className)} data-pagefind-body>
+  <slot />
+</div>
+
+<script>
+  /* medium-zoom */
+  import mediumZoom from 'medium-zoom/dist/pure'
+  const zoom = mediumZoom({
+    background: 'rgb(0 0 0 / 0.8)',
+  })
+
+  document.addEventListener('astro:page-load', () => {
+    zoom.detach()
+    zoom.attach('.markdown img:not(.no-zoom):not(a img)')
+
+    const lqipImages = document.querySelectorAll('.markdown img[style*="--lqip:"]')
+    lqipImages.forEach((img) => {
+      const imageEl = img as HTMLImageElement
+
+      // 去除占位符，避免闪烁
+      function handleImageLoad() {
+        imageEl.style.removeProperty('--lqip')
+      }
+
+      if (imageEl.complete && imageEl.naturalHeight !== 0) {
+        handleImageLoad()
+      } else {
+        imageEl.addEventListener('load', handleImageLoad)
+        imageEl.addEventListener('error', handleImageLoad)
+      }
+    })
+  })
+</script>
+
+<script define:vars={{ enabled: POSTS_CONFIG.imageDarkenInDark }} is:inline>
+  if (enabled) {
+    const darkModeHandler = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      document.querySelectorAll('.markdown img:not(:hover):not(.medium-zoom-image--opened):not(.noDarken)').forEach((img) => {
+        if (isDark) {
+          img.style.setProperty('filter', 'brightness(0.75) contrast(1.1)')
+        } else {
+          img.style.removeProperty('filter')
+        }
+      })
+    }
+
+    // 监听暗色模式变化
+    const observer = new MutationObserver(() => {
+      darkModeHandler()
+    })
+
+    document.addEventListener('astro:page-load', () => {
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+      })
+      darkModeHandler()
+
+      // 监听 hover 事件
+      document.querySelectorAll('.markdown :not(image-figure-polaroid) img:not(.noDarken)').forEach((img) => {
+        img.addEventListener('mouseenter', () => {
+          img.style.removeProperty('filter')
+        })
+        img.addEventListener('mouseleave', () => {
+          if (document.documentElement.classList.contains('dark')) {
+            img.style.setProperty('filter', 'brightness(0.75) contrast(1.1)')
+          }
+        })
+      })
+    })
+  }
+</script>

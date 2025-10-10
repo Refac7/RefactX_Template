@@ -1,0 +1,48 @@
+/* 拍立得风格图片 */
+
+image-div-polaroid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2em 0;
+}
+image-figure-polaroid {
+  display: inline-block;
+  background: white;
+  padding: 1rem;
+  padding-bottom: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transform: rotate(-1deg);
+  transition: all 0.2s ease;
+  width: 55%;
+  min-width: 300px;
+}
+
+image-figure-polaroid:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+image-figure-polaroid img {
+  border-radius: 3px;
+  filter: contrast(1.1) saturate(1.1);
+}
+
+image-figure-polaroid p {
+  margin-top: 1rem;
+  font-family: 'Comic Sans MS', cursive;
+  font-size: 1rem;
+  color: #666;
+  text-align: center;
+}
+
+.dark image-figure-polaroid {
+  background: #ffffff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  image-figure-polaroid {
+    margin: 2em 10%;
+  }
+}

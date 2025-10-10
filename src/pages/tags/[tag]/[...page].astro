@@ -1,0 +1,70 @@
+---
+import type { GetStaticPaths, Page } from 'astro'
+import type { CollectionEntry } from 'astro:content'
+import { getCollection } from 'astro:content'
+import { POSTS_CONFIG } from '~/config'
+import { postsSort } from '~/lib/utils'
+import Layout from '~/layouts/Layout.astro'
+import Pagination from '~/components/base/Pagination.astro'
+import List from '~/components/posts/card/List.astro'
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  const allPosts = await getCollection('posts')
+  const sortedPosts = postsSort(allPosts)
+  const uniqueTags = [...new Set(sortedPosts.flatMap((post) => post.data.tags || []))]
+
+  return uniqueTags
+    .map((tag) => {
+      const tagPosts = sortedPosts.filter((post) => post.data.tags?.includes(tag))
+      return paginate(tagPosts, {
+        params: { tag },
+        props: { tag },
+        pageSize: POSTS_CONFIG.tagsPageConfig.size,
+      })
+    })
+    .flat()
+}
+
+interface Props {
+  page: Page<CollectionEntry<'posts'>>
+  tag: string
+}
+
+const { page, tag } = Astro.props
+const description = `Posts with the tag #${tag}`
+---
+
+<Layout title={`#${tag}`} {description}>
+  <div class="relative z-[1] py-8 pb-10 px-6 sm:px-8">
+    <div class="mb-12 md:mb-16">
+      <div class="flex flex-col gap-3">
+        <nav class="flex items-center gap-3 text-sm text-muted-foreground/80">
+          <a href="/tags" class="group flex items-center gap-2 hover:text-primary transition-colors">
+            <span class="icon-[ph--tag-simple] w-4 h-4"></span>
+            <span>Tags</span>
+          </a>
+          <span class="text-muted-foreground/30">/</span>
+          <span class="text-foreground/90">#{tag}</span>
+        </nav>
+
+        <div class="flex gap-2 justify-between">
+          <h1 class="text-3xl font-medium tracking-wide">
+            #{tag}
+          </h1>
+          <div class="flex flex-col items-end justify-center gap-1 text-sm text-muted-foreground/70">
+            <div class="flex items-center gap-2">
+              <span class="icon-[ph--article-medium] w-4 h-4"></span>
+              <span>{page.total} {page.total === 1 ? 'post' : 'posts'}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fade-up space-y-8">
+      <List posts={page.data} type={POSTS_CONFIG.tagsPageConfig.type} heroImageLayout={POSTS_CONFIG.tagsPageConfig?.heroImageLayout} />
+    </div>
+
+    <Pagination {page} baseUrl={`/tags/${tag}`} class="mt-12" />
+  </div>
+</Layout>

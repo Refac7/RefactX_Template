@@ -1,0 +1,31 @@
+---
+import { cn } from '~/lib/utils'
+import NumberTicker from './NumberTicker'
+
+interface Props extends Omit<astroHTML.JSX.AnchorHTMLAttributes, 'class' | 'children'> {
+  icon: string
+  count?: number
+  label?: string
+  class?: string | Record<string, boolean>
+}
+
+const { label, icon, count, class: className, ...props }: Props = Astro.props
+---
+
+<a
+  class={cn(
+    'group -m-1 p-1 ring-offset-background focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded flex items-center gap-2 cursor-pointer',
+    className
+  )}
+  {...props}
+  target="_blank"
+>
+  <span class={cn('h-6 w-6 text-muted-foreground transition group-hover:text-primary', icon)}></span>
+  {
+    count !== undefined && (
+      <span class="text-muted-foreground text-sm group-hover:text-primary">
+        <NumberTicker play value={count} label={label} client:load />
+      </span>
+    )
+  }
+</a>
