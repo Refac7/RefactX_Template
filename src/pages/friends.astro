@@ -1,11 +1,12 @@
 ---
 import { cn } from '~/lib/utils'
-import { FRIENDS_LIST, FRIENDS_CONFIG } from '~/config'
+import { FRIENDS_LIST, FRIENDS_CONFIG, FRIENDS_CONTACT } from '~/config'
 import Layout from '~/layouts/Layout.astro'
 import SectionDivider from '~/components/base/SectionDivider.astro'
 import Comments from '~/components/posts/base/Comments.astro'
 
 const { title, description, introduce } = FRIENDS_CONFIG
+const { sitename, email, author, sitelink, siteavatar, description: myDescription } = FRIENDS_CONTACT;
 ---
 
 <Layout title={title} description={description}>
@@ -88,9 +89,9 @@ const { title, description, introduce } = FRIENDS_CONFIG
         </ul>
         <p class="mt-4 text-sm">
             邮件：<a
-            href="mailto:refs@aliyun.com"
+            href={`mailto:${email}`}
           >
-            refs@aliyun.com
+            {email}
           </a>
         </p>
         <p class="mt-1 text-sm">
@@ -103,31 +104,31 @@ const { title, description, introduce } = FRIENDS_CONFIG
             <tbody>
               <tr class="odd:bg-muted/10 even:bg-background dark:odd:bg-muted/20 dark:even:bg-background">
               <td class="py-2 px-4 font-semibold bg-muted/20 dark:bg-muted/30 text-primary">站点名称</td>
-              <td class="py-2 px-4 text-foreground">RefactX Project</td>
+              <td class="py-2 px-4 text-foreground">{sitename}</td>
               </tr>
               <tr class="odd:bg-muted/10 even:bg-background dark:odd:bg-muted/20 dark:even:bg-background">
               <td class="py-2 px-4 font-semibold bg-muted/20 dark:bg-muted/30 text-primary">站点作者</td>
-              <td class="py-2 px-4 text-foreground">Refactored</td>
+              <td class="py-2 px-4 text-foreground">{author}</td>
               </tr>
               <tr class="odd:bg-muted/10 even:bg-background dark:odd:bg-muted/20 dark:even:bg-background">
               <td class="py-2 px-4 font-semibold bg-muted/20 dark:bg-muted/30 text-primary">站点链接</td>
               <td class="py-2 px-4">
-                <a href="https://www.refact.cc/" target="_blank" class="text-primary underline hover:text-primary/80 transition-colors">
-                https://www.refact.cc/
+                <a href={sitelink} class="text-primary underline hover:text-primary/80 transition-colors">
+                {sitelink}
+                </a>
+              </td>
+              </tr>
+              <tr class="odd:bg-muted/10 even:bg-background dark:odd:bg-muted/20 dark:even:bg-background">
+              <td class="py-2 px-4 font-semibold bg-muted/20 dark:bg-muted/30 text-primary">头像图片链接</td>
+              <td class="py-2 px-4">
+                <a href={siteavatar} class="text-primary underline hover:text-primary/80 transition-colors">
+                {siteavatar}
                 </a>
               </td>
               </tr>
               <tr class="odd:bg-muted/10 even:bg-background dark:odd:bg-muted/20 dark:even:bg-background">
               <td class="py-2 px-4 font-semibold bg-muted/20 dark:bg-muted/30 text-primary">描述</td>
-              <td class="py-2 px-4 text-muted-foreground">形体是简单而纯粹的，它不是完整的群体，每个形体都指向其复杂性，并最终被复杂性联系在一起。</td>
-              </tr>
-              <tr class="odd:bg-muted/10 even:bg-background dark:odd:bg-muted/20 dark:even:bg-background">
-              <td class="py-2 px-4 font-semibold bg-muted/20 dark:bg-muted/30 text-primary">头像图片链接</td>
-              <td class="py-2 px-4">
-                <a href="/avatar.png" target="_blank" class="text-primary underline hover:text-primary/80 transition-colors">
-                https://www.refact.cc/avatar.png
-                </a>
-              </td>
+              <td class="py-2 px-4 text-muted-foreground">{myDescription}</td>
               </tr>
             </tbody>
             </table>

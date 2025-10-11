@@ -12,6 +12,7 @@ import type {
   TagsConfig,
 } from '~/types'
 
+// 站点信息
 export const SITE: Site = {
   title: 'RefactX Project',
   description: '如风般轻盈，如光般纯粹。',
@@ -67,13 +68,13 @@ export const FOOTER_LINKS: Link[] = [
 export const SOCIAL_LINKS: SocialLink[] = [
   {
     name: 'github',
-    url: 'https://github.com/Refac7',
+    url: '/',
     icon: 'icon-[ri--github-fill]',
     count: 1,
   },
   {
     name: 'bilibili',
-    url: 'https://space.bilibili.com/441325177',
+    url: '/',
     icon: 'icon-[ri--bilibili-fill]',
     count: 77,
   },
@@ -180,9 +181,10 @@ export const GITHUB_CONFIG: GithubConfig = {
   TOOLTIP_ENABLED: true
 }
 
+// 文章配置
 export const POSTS_CONFIG: PostConfig = {
   title: 'Posts',
-  description: 'Refact 的文章',
+  description: '文章',
   introduce: '不定时更新维护文章，可订阅 RSS 获取最新更新状态。',
   author: 'Refact',
   homePageConfig: {
@@ -210,12 +212,14 @@ export const POSTS_CONFIG: PostConfig = {
   prevPostText: '上一篇'
 }
 
+// 标签配置
 export const TAGS_CONFIG: TagsConfig = {
   title: 'Tags',
   description: '所有文章标签',
   introduce: '所有文章标签均在此处，点击即可筛选。'
 }
 
+// 项目配置
 export const PROJECTS_CONFIG: ProjectConfig = {
   title: 'Projects',
   description: '我的项目案例',
@@ -235,6 +239,7 @@ export const ProjectList: Project[] = [
   },
 ]
 
+// 图库配置
 export const PHOTOS_CONFIG: PhotosConfig = {
   title: 'Photos',
   description: '浮光掠影处，皆是生活馈赠的吉光片羽',
@@ -282,98 +287,10 @@ export const PhotosList: PhotoData[] = [
         variant: '4x5',
       },
     ],
-  },
-  {
-  title: "试卷焚尸炉·孟津停尸间",
-  icon: {
-    type: "emoji",
-    value: "🔪",
-  },
-  description: "笔杆捅穿黄河·答题卡褶皱里爬出蛆虫状元",
-  date: '2025-05-24',
-  photos: [
-    {
-      src: '/photos/250524-1.webp',
-      width: 2016,
-      height: 1512,
-      variant: '4x3',
-    },
-    {
-      src: '/photos/250524-2.webp',
-      width: 1512,
-      height: 2016,
-      variant: '4x5',
-    },
-    {
-      src: '/photos/250524-3.webp',
-      width: 2016,
-      height: 1512,
-      variant: '4x5',
-    },
-  ],
-  },
-  {
-    title: '河洛暮色·孟津',
-    icon: {
-      type: 'emoji',
-      value: '🌅',
-    },
-    description: '邙山晚照染黄河，千年帝都的黄昏剪影',
-    date: '2024-08-09',
-    photos: [
-      {
-        src: '/photos/240809-1.webp',
-        width: 2016,
-        height: 1512,
-        variant: '4x3',
-      },
-      {
-        src: '/photos/240809-2.webp',
-        width: 2016,
-        height: 1512,
-        variant: '4x3',
-      },
-      {
-        src: '/photos/240809-3.webp',
-        width: 2016,
-        height: 1512,
-        variant: '4x3',
-      },
-    ],
-  },
-  {
-    title: '雾锁津渡·孟津',
-    icon: {
-      type: 'emoji',
-      value: '🌉',
-    },
-    description: '烟霭迷蒙中的工业剪影，别样城郭印记',
-    date: '2024-02-20',
-    photos: [
-      {
-        src: '/photos/240220-1.webp',
-        width: 2016,
-        height: 1512,
-        variant: '4x3',
-      },
-      {
-        src: '/photos/240220-2.webp',
-        width: 2016,
-        height: 1512,
-        variant: '4x3',
-      },
-     {
-        src: '/photos/240220-3.webp',
-        width: 2016,
-        height: 1512,
-        variant: '4x3',
-      },
-    ],
-  },
+  }
 ]
 
-// 友链配置
-// src/config.ts
+// 友链列表配置
 export const FRIENDS_CONFIG = {
   title: 'Friends',
   description: '我的朋友们都在这里，欢迎互访～',
@@ -390,7 +307,17 @@ export const FRIENDS_LIST = [
   },
 ]
 
+// 我的友链信息
+export const FRIENDS_CONTACT = {
+  sitename: 'RefactX Project',
+  email: 'refs@aliyun.com',
+  author: 'Refactored',
+  sitelink: 'https://www.refact.cc',
+  siteavatar: 'https://refact.cc/avatar.png',
+  description: '形体是简单而纯粹的，它不是完整的群体，每个形体都指向其复杂性，并最终被复杂性联系在一起。', 
+}
+
 // Waline 配置
 export const WALINE_CONFIG = {
-  serverURL: "https://waline.refact.cc/", // Waline 后端服务器地址
+  serverURL: "", // Waline 后端服务器地址
 };
