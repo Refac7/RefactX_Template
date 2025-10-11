@@ -19,7 +19,6 @@ RefactX
 ├── .vscode                               # VS Code工作区配置
 │   ├── extensions.json                   # 推荐安装的VSCode扩展
 │   ├── launch.json                       # 调试配置
-│   ├── RefactX.code-snippets.json          # 自定义代码片段
 │   └── settings.json                     # 编辑器设置
 ├── plugins                               # Markdown扩展插件
 ├── public                                # 静态资源目录
@@ -66,6 +65,7 @@ RefactX
 │   │   │   │   └── [...page].astro       # 标签分页
 │   │   │   └── index.astro               # 标签云
 │   │   ├── 404.astro                     # 404页面
+│   │   ├── friends.astro                 # 友链页面
 │   │   ├── index.astro                   # 首页
 │   │   └── rss.xml.js                    # RSS生成
 │   ├── stores                            # 状态管理
