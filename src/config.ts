@@ -319,5 +319,6 @@ export const FRIENDS_CONTACT = {
 
 // Waline 配置
 export const WALINE_CONFIG = {
-  serverURL: "", // Waline 后端服务器地址
+  enableComment: false, // 设置为 false 可禁用评论组件
+  serverURL: "", // Waline 服务器地址
 };
