@@ -1,6 +1,7 @@
 /* ===== Import Dependencies | 导入依赖 ===== */
 @import 'medium-zoom/dist/style.css';
 @import 'rehype-callouts/theme/vitepress';
+@import url('https://unpkg.com/katex@0.16.25/dist/katex.min.css');
 
 /* ===== Color Variables | 颜色变量 ===== */
 .markdown {

@@ -44,12 +44,22 @@ import { WALINE_CONFIG } from "~/config";
         --waline-active-color: #dc2626 !important;
         --waline-font-size: 1rem !important;
         --waline-font-family: 'Onest Variable', 'Geist Variable', 'ShangguSansSC Variable', system-ui, -apple-system, sans-serif !important;
+        --waline-border-color: #F0F1F5 !important;
+      }
+
+      /* 为输入框和评论卡片设置边框颜色 */
+      #waline .wl-editor,
+      #waline .wl-input,
+      #waline .wl-card,
+      #waline .wl-panel {
+        border-color: var(--waline-border-color) !important;
       }
 
       /* 深色模式 */
       html.dark #waline {
         --waline-theme-color: #ffffff !important;
         --waline-active-color: #dc2626 !important;
+        --waline-border-color: #18181B !important;
       }
 
       html.dark #waline .wl-panel {
@@ -64,6 +74,7 @@ import { WALINE_CONFIG } from "~/config";
         background-color: var(--waline-bgcolor) !important;
         box-shadow: none !important;
         outline: none !important;
+        border-color: var(--waline-border-color) !important;
       }
     </style>
 

@@ -1,7 +1,7 @@
 {
   "name": "refactx",
   "type": "module",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "MIT",
   "scripts": {
     "dev": "astro dev",
@@ -13,11 +13,11 @@
     "postbuild": "pagefind --site dist"
   },
   "dependencies": {
-    "@astrojs/react": "^4.2.1",
+    "@astrojs/react": "4.4.0",
     "@floating-ui/react": "^0.27.12",
     "@nanostores/react": "^0.8.4",
     "@waline/client": "^3.6.0",
-    "astro": "^5.6.1",
+    "astro": "^5.15.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.5.0",
     "medium-zoom": "^1.1.0",
@@ -27,11 +27,11 @@
     "tailwind-merge": "^3.0.2"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.4",
-    "@astrojs/markdown-remark": "^6.3.1",
-    "@astrojs/mdx": "^4.2.3",
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.3.1",
+    "@astrojs/check": "^0.9.5",
+    "@astrojs/markdown-remark": "^6.3.8",
+    "@astrojs/mdx": "^4.3.8",
+    "@astrojs/rss": "^4.0.13",
+    "@astrojs/sitemap": "3.6.0",
     "@expressive-code/plugin-collapsible-sections": "^0.41.1",
     "@expressive-code/plugin-line-numbers": "^0.41.1",
     "@iconify/json": "^2.2.321",
