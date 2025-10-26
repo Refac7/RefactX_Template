@@ -10,6 +10,7 @@ import PostFeatures from '~/components/posts/toc/PostFeatures.astro'
 import TocMobile from '~/components/posts/toc/TocMobile.astro'
 import Jap from '~/components/posts/layouts/Jap.astro'
 import { POSTS_CONFIG } from '~/config'
+import SectionDivider from '~/components/base/SectionDivider.astro'
 import Comments from '~/components/posts/base/Comments.astro';
 
 
@@ -57,8 +58,9 @@ const PostLayout = layoutMap[layoutKey]
     </div>
     {hasValidHeadings && <PostFeatures {post} {posts} headings={filterHeadings} />}
 
+    <SectionDivider/>
     <!-- 评论区 -->
-    <div class="px-4 sm:px-6 pb-6 sm:pb-8">
+    <div class="mt-6 px-4 sm:px-6 pb-6 sm:pb-8">
       <Comments />
     </div>
   </div>

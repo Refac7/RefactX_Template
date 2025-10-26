@@ -389,10 +389,3 @@ input[type='search']::-moz-search-cancel-button {
   word-break: break-word;
   white-space: normal;
 }
-
-/* 如果链接出现在代码块或内联代码里 */
-.markdown pre,
-.markdown code {
-  white-space: pre-wrap;
-  word-break: break-word;
-}
