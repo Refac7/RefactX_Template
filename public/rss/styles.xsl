@@ -7,108 +7,133 @@
         <title><xsl:value-of select="/rss/channel/title"/></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <style type="text/css">
-          /* 极简/学术风格 */
+          /* 基础浅色模式样式 */
           body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* 清晰的无衬线字体 */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             line-height: 1.7;
             margin: 0 auto;
-            max-width: 720px; /* 适中宽度 */
+            max-width: 720px;
             padding: 3em 1.5em;
-            background-color: #fdfdfd; /* 非常浅的灰色背景 */
-            color: #333; /* 深灰色文字 */
-            font-size: 16px; /* 标准字体大小 */
+            background-color: #fdfdfd;
+            color: #333;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease; /* 平滑过渡 */
           }
-
-          /* 标题样式 */
           h1 {
-            font-size: 1.75em; /* 相对小一点的标题 */
+            font-size: 1.75em;
             margin-bottom: 1em;
-            border-bottom: 1px solid #eee; /* 非常浅的边框 */
+            border-bottom: 1px solid #eee;
             padding-bottom: 0.4em;
-            font-weight: 500; /* Medium weight */
-            color: #111; /* 黑色标题 */
+            font-weight: 500;
+            color: #111;
           }
           h1 a {
             color: inherit;
             text-decoration: none;
           }
           h1 a:hover {
-             text-decoration: underline; /* 悬停下划线 */
+             text-decoration: underline;
           }
-
-          /* 描述文字 */
           p {
             margin: 0.5em 0 2.5em 0;
-            color: #555; /* 中灰色 */
+            color: #555;
             font-size: 1em;
           }
-
-          /* 列表样式 */
           ul {
             list-style: none;
             padding: 0;
           }
-
-          /* 列表项样式 - 移除边框和阴影，增加间距 */
           li {
-            background-color: transparent; /* 透明背景 */
-            border: none; /* 无边框 */
-            border-radius: 0; /* 无圆角 */
-            margin-bottom: 2em; /* 增加列表项间距 */
-            padding: 0; /* 无内边距 */
-            box-shadow: none; /* 无阴影 */
-            border-bottom: 1px dotted #ddd; /* 用虚线分隔 */
-            padding-bottom: 1.5em; /* 虚线下方的间距 */
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            margin-bottom: 2em;
+            padding: 0;
+            box-shadow: none;
+            border-bottom: 1px dotted #ddd;
+            padding-bottom: 1.5em;
           }
           li:last-child {
-             border-bottom: none; /* 最后一项无分隔线 */
+             border-bottom: none;
              padding-bottom: 0;
              margin-bottom: 0;
           }
-          li:hover {
-             /* 无悬停效果，保持简洁 */
-          }
-
-
-          /* 列表项标题 */
           li h2 {
             margin: 0 0 0.3em 0;
-            font-size: 1.15em; /* 稍大一点 */
-            font-weight: 500; /* Medium weight */
+            font-size: 1.15em;
+            font-weight: 500;
           }
           li h2 a {
-            color: #0056b3; /* 蓝色链接 */
+            color: #0056b3;
             text-decoration: none;
             transition: color 0.2s ease-in-out;
           }
           li h2 a:hover {
-            color: #003d80; /* 深蓝色悬停 */
+            color: #003d80;
             text-decoration: underline;
           }
-
-          /* 发布日期样式 */
           .pubDate {
-            color: #777; /* 灰色日期 */
-            font-size: 0.875em; /* text-sm */
+            color: #777;
+            font-size: 0.875em;
             margin-bottom: 0.5em;
             display: block;
           }
-
-          /* 描述内容样式 */
           .description {
-            color: #444; /* 稍深的灰色 */
+            color: #444;
             font-size: 0.95em;
           }
-
-          /* 页脚样式 */
           footer {
             margin-top: 4em;
             padding-top: 1em;
-            border-top: 1px solid #eee; /* 非常浅的边框 */
-            font-size: 0.875em; /* text-sm */
-            color: #888; /* 浅灰色页脚 */
+            border-top: 1px solid #eee;
+            font-size: 0.875em;
+            color: #888;
             text-align: center;
-            line-height: 1.5; /* 增加行高以便容纳多行 */
+            line-height: 1.5;
+          }
+          footer a {
+            color: #0056b3;
+            text-decoration: none;
+          }
+          footer a:hover {
+            text-decoration: underline;
+          }
+
+          /* 深色模式样式 - 跟随系统设置自动切换 */
+          @media (prefers-color-scheme: dark) {
+            body {
+              background-color: #121212; /* 深黑背景 */
+              color: #eee; /* 浅灰文字 */
+            }
+            h1 {
+              color: #fff; /* 白色标题 */
+              border-bottom-color: #333; /* 深色边框 */
+            }
+            p {
+              color: #bbb; /* 中浅灰描述 */
+            }
+            li {
+              border-bottom-color: #2d2d2d; /* 深色虚线分隔 */
+            }
+            li h2 a {
+              color: #8ab4f8; /* 浅蓝色链接 */
+            }
+            li h2 a:hover {
+              color: #aecbfa; /* 高亮浅蓝色悬停 */
+            }
+            .pubDate {
+              color: #999; /* 浅灰日期 */
+            }
+            .description {
+              color: #ccc; /* 浅灰内容 */
+            }
+            footer {
+              border-top-color: #333; /* 深色边框 */
+              color: #aaa; /* 浅灰页脚 */
+            }
+            footer a {
+              color: #8ab4f8; /* 浅蓝色页脚链接 */
+            }
           }
         </style>
       </head>
@@ -130,7 +155,7 @@
         </ul>
         <footer>
           Generated by Astro using @astrojs/rss <br /> 
-          Powered by <a href="https://github.com/Refac7/RefactX_Template" target="_blank" style="color: #0056b3; text-decoration: none;">RefactX Theme</a>
+          Powered by <a href="https://github.com/Refac7/RefactX_Template" target="_blank">RefactX Theme</a>
         </footer>
       </body>
     </html>
